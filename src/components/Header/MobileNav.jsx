@@ -65,20 +65,7 @@ const MobileNav = ({ routs = [] }) => {
                       </NavLink>
                     );
                   })}
-                </div>
-                {/* <div className="me-3 text-xl">
-                  <NavLink
-                    className={({ isActive }) => {
-                      return isActive
-                        ? " text-accent border-b-2 border-accent capitalize"
-                        : "  capitalize font-medium hover:text-accent transition-all";
-                    }}
-                    to="/topic"
-                  >
-                    {" "}
-                    topic{" "}
-                  </NavLink>
-                </div> */}
+                </div>                
               </div>
             </div>
 

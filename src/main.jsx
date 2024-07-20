@@ -7,8 +7,7 @@ import { store } from "./redux/store.js";
 import axios from "axios";
 
 // axios base url
-// axios.defaults.baseURL = "http://localhost:5000/api/v1";
-axios.defaults.baseURL = "https://question-server-jm21.onrender.com/api/v1";
+axios.defaults.baseURL = "http://localhost:5000/api/v1";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

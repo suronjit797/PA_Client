@@ -9,12 +9,9 @@ import { useEffect, useState } from "react";
 
 const generalRouts = [
   { name: "Home", path: "/" },
-  { name: "Question", path: "/question" },
+  { name: "Transaction", path: "/transaction" },
 ];
-const adminRouts = [
-  { name: "Topic", path: "/topic" },
-  { name: "User", path: "/user" },
-];
+const adminRouts = [{ name: "User", path: "/user" }];
 
 const Header = () => {
   const navigate = useNavigate();
@@ -34,16 +31,17 @@ const Header = () => {
     navigate("/login");
   };
   return (
-    <header className=" bg-[#254336]  py-4 px-2 xl:py-5  md:py-5 capitalize fixed z-50 w-screen">
-      <div className="container mx-auto flex justify-between items-center">
+    <header className=" bg-purple-700  py-4 px-2 xl:py-5  md:py-5 capitalize z-50 w-full">
+      <div className="container mx-auto flex items-center text-white">
         {/* Logo */}
         <Link to="/">
-          <h1 className="text-4xl font-semibold text-white">
-            Logo <span className=" text-[#DAD3BE]">.</span>
+          <h1 className="text-4xl font-semibold ">
+            M.
+            <span className="text-rose-500">M</span>
           </h1>
         </Link>
         {/* Desktop nav */}
-        <div className=" hidden md:flex items-center gap-8">
+        <div className="ms-auto hidden md:flex items-center gap-8">
           <DesktopNav routs={routs} />
         </div>
 
@@ -52,10 +50,13 @@ const Header = () => {
           <div className="hidden md:flex items-center ">
             {isLogin ? (
               <span className="mx-4 flex flex-col justify-start">
-                <span className=" text-[12px] text-accent-hover">{user.role}</span>
-                <div>
-                  <IoMdLogOut onClick={handleLogout} className=" text-4xl font-semibold text-accent" />
-                </div>
+                {/* <span className=" text-[12px] text-accent-hover">{user.role}</span> */}
+                <button
+                  className=" text-2xl font-semibold bg-red-400 hover:bg-red-500 ease-out transition-all px-4 py-1 rounded-lg "
+                  onClick={handleLogout}
+                >
+                  <IoMdLogOut />
+                </button>
               </span>
             ) : (
               <>

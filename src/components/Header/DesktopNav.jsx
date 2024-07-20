@@ -5,7 +5,7 @@ const DesktopNav = ({ routs = [] }) => {
   return (
     <div>
       <div className="flex gap-5  text-white font-semibold">
-        <div className="me-3 flex gap-5">
+        <div className="flex gap-5">
           {routs.map((item, index) => {
             return (
               <NavLink

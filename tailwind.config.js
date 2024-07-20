@@ -10,12 +10,12 @@ export default {
         primary: ["JetBrains Mono"],
       },
       colors: {
-        primary: "#254336",
-        secondary: "#6B8A7A",
-        accent: {
-          DEFAULT: "#DAD3BE",
-          hover: "#B7B597",
-        },
+        // primary: "#254336",
+        // secondary: "#6B8A7A",
+        // accent: {
+        //   DEFAULT: "#DAD3BE",
+        //   hover: "#B7B597",
+        // },
       },
     },
   },

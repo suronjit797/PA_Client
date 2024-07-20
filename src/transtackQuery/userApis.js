@@ -1,27 +1,30 @@
 import axios from "axios";
 
+const endpoint = "/users/";
+
 export const createTopicFn = (body) => {
-    // console.log({ body });
-    return axios.post("/users", body);
+  return axios.post(endpoint, body);
 };
 
 export const getAllUserFn = async () => {
-    const { data } = await axios.get("/users");
-    return data 
-    // return data?.data||[]
-  //   const topicData = data.data;
-  //   return topicData;
-  };
+  const { data } = await axios.get(endpoint);
+  return data;
+};
 
 export const getSingleUserFn = async (id) => {
-    const { data } = await axios.get("/users/" + id);
-    return data?.data||{}
-  };
-   
-export const updateUserFn = ({ id, body }) => {
-    return axios.put("/users/" + id, body);
+  const { data } = await axios.get(endpoint + id);
+  return data?.data || {};
 };
-  
-export const deleteUserFn = ( id ) => {
-    return axios.delete("/users/" + id);
+
+export const getProfileUserFn = async () => {
+  const { data } = await axios.get(endpoint + "profile");
+  return data?.data || {};
+};
+
+export const updateUserFn = ({ id, body }) => {
+  return axios.put(endpoint + id, body);
+};
+
+export const deleteUserFn = (id) => {
+  return axios.delete(endpoint + id);
 };

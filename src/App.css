@@ -7,6 +7,7 @@ input::-webkit-inner-spin-button {
 
 html {
   scroll-behavior: smooth;
+  background-color: #dde1f9f3;
 }
 
 /* Firefox */
