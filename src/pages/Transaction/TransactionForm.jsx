@@ -4,6 +4,7 @@ import { Modal, Form, Input, Button, Select, InputNumber, Switch } from "antd";
 import { useEffect } from "react";
 import PropTypes from "prop-types";
 import { createTransactionFn, updateTransactionFn } from "../../transtackQuery/transactionApis";
+import { transactionsOptions } from "../../utils/SelectOption";
 
 const TransactionForm = ({ isModalOpen, editData, setIsModalOpen, setEditData }) => {
   const [form] = Form.useForm();
@@ -46,6 +47,7 @@ const TransactionForm = ({ isModalOpen, editData, setIsModalOpen, setEditData })
       }
       handleCancel();
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.log("Validation Failed:", error);
     }
   };
@@ -70,27 +72,7 @@ const TransactionForm = ({ isModalOpen, editData, setIsModalOpen, setEditData })
           <Input placeholder="Input Title" />
         </Form.Item>
         <Form.Item name="type" label="Type" rules={[{ required: true, message: "Type is required" }]}>
-          <Select
-            placeholder="Select Type"
-            options={[
-              {
-                value: "income",
-                label: "Income",
-              },
-              {
-                value: "expanse",
-                label: "Expanse",
-              },
-              {
-                value: "give",
-                label: "Give",
-              },
-              {
-                value: "take",
-                label: "Take",
-              },
-            ]}
-          />
+          <Select placeholder="Select Type" options={transactionsOptions} />
         </Form.Item>
 
         <Form.Item name="amount" label="Amount" rules={[{ required: true, message: "Amount is required!" }]}>

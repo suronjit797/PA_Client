@@ -7,13 +7,14 @@ import TransactionsList from "./TransactionsList";
 function Transactions() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editData, setEditData] = useState(false);
+
   return (
     <div className="container mx-auto">
-      <div className="grid grid-cols-6 my-4">
+      <div className="grid grid-cols-5 gap-8 my-4">
         <div className="">
           <TransactionSideBar />
         </div>
-        <div className="col-span-5">
+        <div className="col-span-4">
           <div className="flex justify-between items-center">
             <h4 className="text-xl font-bold"> Transactions </h4>
             <Button onClick={() => setIsModalOpen(!isModalOpen)} type="primary">

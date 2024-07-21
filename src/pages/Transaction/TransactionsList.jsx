@@ -1,12 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { deleteTransactionFn, getAllTransactionFn } from "../../transtackQuery/transactionApis";
-import { Button, notification, Spin, Table, Tag } from "antd";
+import { Button, Spin, Table, Tag } from "antd";
 import { FaPenAlt, FaTrashAlt } from "react-icons/fa";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { useSearchQuery } from "../../utils/useSearchQuery";
-import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { searchQueryFormat, transactionQueries, useSearchQuery } from "../../utils/useSearchQuery";
+import { serialNumber } from "../../utils/helpers";
 
 const rowColor = {
   income: "green",
@@ -25,15 +25,14 @@ const StyledTable = styled(Table)`
 `;
 
 function TransactionsList({ setIsModalOpen, setEditData }) {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [searchQuery, setSearchQuery] = useSearchQuery(transactionQueries);
 
-  const page = useSearchQuery("page") || 1;
-  const limit = useSearchQuery("limit") || 10;
+  const { limit, page } = searchQuery;
 
   const { data, isPending } = useQuery({
-    queryKey: ["Transactions", limit, page],
-    queryFn: () => getAllTransactionFn({ limit, page }),
+    queryKey: ["Transactions", searchQuery],
+    queryFn: () => getAllTransactionFn({ ...searchQuery }),
   });
 
   const {
@@ -58,16 +57,14 @@ function TransactionsList({ setIsModalOpen, setEditData }) {
     // setEditData(data)
   };
 
-  const handleTableChange = (current, size) => {
-    navigate(`?page=${current}&limit=${size}`);
-    // setPage(current);
-    // setLimit(size);
+  const handleTableChange = (page, limit) => {
+    setSearchQuery(searchQueryFormat({ ...searchQuery, page, limit }));
   };
 
   const columns = [
     {
       title: "No.",
-      render: (text, record, index) => <span key={index}> {index + 1} </span>,
+      render: (text, record, index) => <span key={index}>{serialNumber(page, limit, index)}</span>,
       align: "center",
       width: "100px",
     },
@@ -145,8 +142,8 @@ function TransactionsList({ setIsModalOpen, setEditData }) {
             columns={columns}
             dataSource={data?.data}
             pagination={{
-              current: page,
-              pageSize: limit,
+              current: page || 1,
+              pageSize: limit || 10,
               total: data?.meta?.total,
               onChange: handleTableChange,
               pageSizeOptions: [10, 20, 50],
@@ -165,4 +162,6 @@ export default TransactionsList;
 TransactionsList.propTypes = {
   setIsModalOpen: PropTypes.func,
   setEditData: PropTypes.func,
+  queryParams: PropTypes.object,
+  setQueryParams: PropTypes.func,
 };
