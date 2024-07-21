@@ -2,6 +2,7 @@ import { Button, Form, Input, InputNumber, Select, Slider, Switch } from "antd";
 import { useState } from "react";
 import { searchQueryFormat, transactionQueries, useSearchQuery } from "../../utils/useSearchQuery";
 import { transactionsOptions } from "../../utils/SelectOption";
+import { ReloadOutlined } from "@ant-design/icons";
 
 const initData = { range: [] };
 
@@ -10,6 +11,7 @@ function TransactionSideBar() {
   const [searchQuery, setSearchQuery] = useSearchQuery(transactionQueries);
 
   const [formData, setFormData] = useState(initData);
+  const [time, setTime] = useState(initData);
   const [max] = useState(10000);
 
   const handleFinish = (values) => {
@@ -27,10 +29,17 @@ function TransactionSideBar() {
   };
   return (
     <div>
-      <h4 className="text-xl font-bold mb-12"> Filter </h4>
+      <h4 className="mb-12 flex items-center justify-between">
+        <span className="text-xl font-bold ">Filter</span>
+        <Button onClick={handleClear} icon={<ReloadOutlined />} danger />
+      </h4>
 
       <Form
-        onValuesChange={(values) => setFormData((prev) => ({ ...prev, ...values }))}
+        onValuesChange={(_, values) => {
+          clearTimeout(time);
+          setFormData((prev) => ({ ...prev, ...values }));
+          setTime(setTimeout(() => handleFinish(values), 1000));
+        }}
         form={form}
         layout="vertical"
         name="TransactionFrom"
@@ -59,14 +68,14 @@ function TransactionSideBar() {
           <Switch />
         </Form.Item>
 
-        <div className="flex gap-5 justify-between items-center">
+        {/* <div className="flex gap-5 justify-between items-center">
           <Button type="primary" htmlType="submit">
             Search
           </Button>
           <Button type="primary" onClick={handleClear} danger htmlType="button">
             Clear
           </Button>
-        </div>
+        </div> */}
       </Form>
     </div>
   );

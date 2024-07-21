@@ -3,6 +3,7 @@ import TransactionSideBar from "./TransactionSideBar";
 import TransactionForm from "./TransactionForm";
 import { useState } from "react";
 import TransactionsList from "./TransactionsList";
+import TransactionSummary from "./TransactionSummary";
 
 function Transactions() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,6 +24,7 @@ function Transactions() {
             </Button>
           </div>
           <hr className="my-3 border-purple-700" />
+          <TransactionSummary />
           <TransactionsList {...{ isModalOpen, setIsModalOpen, editData, setEditData }} />
           {isModalOpen && <TransactionForm {...{ isModalOpen, setIsModalOpen, editData, setEditData }} />}
         </div>
