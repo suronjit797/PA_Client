@@ -7,10 +7,11 @@ import PropTypes from "prop-types";
 import Swal from "sweetalert2";
 import { searchQueryFormat, transactionQueries, useSearchQuery } from "../../utils/useSearchQuery";
 import { serialNumber } from "../../utils/helpers";
+import { useSelector } from "react-redux";
 
 const rowColor = {
   income: "green",
-  expanse: "red",
+  expense: "red",
   give: "orange",
   take: "violet",
 };
@@ -27,12 +28,13 @@ const StyledTable = styled(Table)`
 function TransactionsList({ setIsModalOpen, setEditData }) {
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useSearchQuery(transactionQueries);
+  const { user } = useSelector((state) => state.auth);
 
   const { limit, page } = searchQuery;
 
   const { data, isPending } = useQuery({
     queryKey: ["Transactions", searchQuery],
-    queryFn: () => getAllTransactionFn({ ...searchQuery }),
+    queryFn: () => getAllTransactionFn({ ...searchQuery, user: user._id }),
   });
 
   const {

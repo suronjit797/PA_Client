@@ -1,22 +1,23 @@
-import DesktopNav from "./DesktopNav";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { setAuth } from "../../redux/features/authSlice";
 import { IoMdLogOut } from "react-icons/io";
-import MobileNav from "./MobileNav";
 import userRole, { authAccess } from "../../utils/userRole";
 import { useEffect, useState } from "react";
+import { FaHome, FaMoneyBill } from "react-icons/fa";
+import "./header.css";
 
 const generalRouts = [
-  { name: "Home", path: "/" },
-  { name: "Transaction", path: "/transaction" },
+  { name: "Home", path: "/", icon: <FaHome /> },
+  { name: "Transaction", path: "/transaction", icon: <FaMoneyBill /> },
 ];
 const adminRouts = [{ name: "User", path: "/user" }];
 
 const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { isLogin, user } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
+
   const [routs, setRouts] = useState(generalRouts);
   useEffect(() => {
     if (authAccess(userRole.admin).includes(user?.role)) {
@@ -31,47 +32,47 @@ const Header = () => {
     navigate("/login");
   };
   return (
-    <header className=" bg-purple-700  py-4 px-2 xl:py-5  md:py-5 capitalize z-50 w-full">
-      <div className="container mx-auto flex items-center text-white">
-        {/* Logo */}
-        <Link to="/">
-          <h1 className="text-4xl font-semibold ">
-            M.
-            <span className="text-rose-500">M</span>
-          </h1>
+    <div>
+      {/* Logo */}
+      <div className="py-3 text-center bg-secondary px-3 custom_shadow h-12 flex items-center justify-center">
+        <Link className="font-bold " to="/">
+          Personal Assistant
         </Link>
-        {/* Desktop nav */}
-        <div className="ms-auto hidden md:flex items-center gap-8">
-          <DesktopNav routs={routs} />
-        </div>
+        <div className="bars"></div>
+      </div>
+      {/* nav */}
+      <div className="main_nav px-1 my-2 ">
+        {routs.map((item, index) => {
+          return (
+            <NavLink
+              key={index}
+              className={({ isActive }) =>
+                `cursor-pointer mb-1 flex hover:bg-[#ffffff15] active:bg-[#ffffff30] transition-all easy items-center px-3 py-2 rounded-md ${
+                  isActive ? "bg-active" : ""
+                }`
+              }
+              to={item.path}
+            >
+              <span className="text-lg w-7">{item.icon} </span>
+              <span>{item.name}</span>
+            </NavLink>
+          );
+        })}
+      </div>
 
-        {/* auth section */}
-        <div>
-          <div className="hidden md:flex items-center ">
-            {isLogin ? (
-              <span className="mx-4 flex flex-col justify-start">
-                {/* <span className=" text-[12px] text-accent-hover">{user.role}</span> */}
-                <button
-                  className=" text-2xl font-semibold bg-red-400 hover:bg-red-500 ease-out transition-all px-4 py-1 rounded-lg "
-                  onClick={handleLogout}
-                >
-                  <IoMdLogOut />
-                </button>
-              </span>
-            ) : (
-              <>
-                <Link to="/login"> login </Link>
-                <Link to="/register"> register </Link>
-              </>
-            )}
-          </div>
-        </div>
-        {/* mobile nav */}
-        <div className="md:hidden">
-          <MobileNav routs={routs} />
+      <div className="py-3 flex justify-between items-center bg-secondary  px-3 custom_shadow h-16">
+        <Link className="font-bold " to="/profile">
+          <h5 className="font-bold">{user.name}</h5>
+          <div className="capitalize"> ({user.role})</div>
+        </Link>
+        <div
+          onClick={handleLogout}
+          className="logout text-xl p-2 rounded cursor-pointer \ text-red-500 hover:bg-[#ffffff15] active:bg-[#ffffff30] "
+        >
+          <IoMdLogOut />
         </div>
       </div>
-    </header>
+    </div>
   );
 };
 

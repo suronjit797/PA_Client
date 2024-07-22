@@ -34,7 +34,6 @@ function App() {
   });
 
 
-
   // net error
   useEffect(() => {
     if (!navigator.onLine) {

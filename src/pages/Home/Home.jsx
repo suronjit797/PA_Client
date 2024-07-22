@@ -12,7 +12,7 @@ const Home = () => {
     queryFn: fetchUsers,
   });
 
-  console.log({ isError, data, error, isFetching });
+  // console.log({ isError, data, error, isFetching });
   return (
     <div className="mt-28 ">
      

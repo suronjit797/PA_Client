@@ -1,3 +1,9 @@
+:root {
+  --primary: #2c2c2c;
+  --secondary: #303030;
+  --text_primary: #f7f7f7;
+}
+
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -7,7 +13,13 @@ input::-webkit-inner-spin-button {
 
 html {
   scroll-behavior: smooth;
-  background-color: #dde1f9f3;
+  /* background-color: #dde1f9f3; */
+  background-color: var(--primary);
+  color: var(--text_primary);
+}
+
+body {
+  font-size: 14px;
 }
 
 /* Firefox */
@@ -20,21 +32,31 @@ input[type="number"] {
 }
 /* width */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 3px;
+  display: none;
+}
+.scroll::-webkit-scrollbar {
+  display: block;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: rgb(215, 210, 210); 
+  /* background: rgb(215, 210, 210); */
+  background: transparent;
 }
- 
+
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #888; 
+  background: #888;
   border-radius: 5px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #555; 
+  background: #555;
+}
+
+/* global */
+.custom_shadow {
+  box-shadow: 0px 0px 6px -2px #000;
 }

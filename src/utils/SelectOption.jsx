@@ -1,19 +1,26 @@
-
 export const transactionsOptions = [
   {
-    value: "income",
     label: "Income",
+    value: "income",
   },
   {
-    value: "expanse",
-    label: "Expanse",
+    label: "Expense",
+    value: "expense",
   },
   {
-    value: "give",
     label: "Give",
+    value: "give",
   },
   {
-    value: "take",
     label: "Take",
+    value: "take",
   },
-]
+  {
+    label: "Save",
+    value: "save",
+  },
+  {
+    label: "Withdraw",
+    value: "withdraw",
+  },
+];

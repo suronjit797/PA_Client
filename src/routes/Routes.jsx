@@ -10,6 +10,7 @@ import UserList from "../pages/User/UserList";
 import UserCreate from "../pages/User/UserCreate";
 import UserUpdate from "../pages/User/UserUpdate";
 import Transactions from "../pages/Transaction/Transactions";
+import TransactionSummary from "../pages/TransactionSummary/TransactionSummary";
 
 export const routes = createBrowserRouter([
   {
@@ -67,6 +68,14 @@ export const routes = createBrowserRouter([
         element: (
           <Auth>
             <Transactions />
+          </Auth>
+        ),
+      },
+      {
+        path: "summary",
+        element: (
+          <Auth>
+            <TransactionSummary />
           </Auth>
         ),
       },

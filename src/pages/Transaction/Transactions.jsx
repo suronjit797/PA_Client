@@ -3,14 +3,14 @@ import TransactionSideBar from "./TransactionSideBar";
 import TransactionForm from "./TransactionForm";
 import { useState } from "react";
 import TransactionsList from "./TransactionsList";
-import TransactionSummary from "./TransactionSummary";
+import Summary from "./Summary";
 
 function Transactions() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editData, setEditData] = useState(false);
 
   return (
-    <div className="container mx-auto">
+    <div className="">
       <div className="grid grid-cols-5 gap-8 my-4">
         <div className="">
           <TransactionSideBar />
@@ -24,7 +24,7 @@ function Transactions() {
             </Button>
           </div>
           <hr className="my-3 border-purple-700" />
-          <TransactionSummary />
+          <Summary />
           <TransactionsList {...{ isModalOpen, setIsModalOpen, editData, setEditData }} />
           {isModalOpen && <TransactionForm {...{ isModalOpen, setIsModalOpen, editData, setEditData }} />}
         </div>
