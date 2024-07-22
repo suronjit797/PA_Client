@@ -4,30 +4,31 @@ import TransactionForm from "./TransactionForm";
 import { useState } from "react";
 import TransactionsList from "./TransactionsList";
 import Summary from "./Summary";
+import { useSelector } from "react-redux";
 
 function Transactions() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editData, setEditData] = useState(false);
+  const { isHeaderModalOpen } = useSelector((state) => state.helper);
 
   return (
     <div className="">
-      <div className="grid grid-cols-5 gap-8 my-4">
+      {isHeaderModalOpen && (
         <div className="">
           <TransactionSideBar />
         </div>
-        <div className="col-span-4">
-          <div className="flex justify-between items-center">
-            <h4 className="text-xl font-bold"> Transactions </h4>
-            <Button onClick={() => setIsModalOpen(!isModalOpen)} type="primary">
-              {" "}
-              Create{" "}
-            </Button>
-          </div>
-          <hr className="my-3 border-purple-700" />
-          <Summary />
-          <TransactionsList {...{ isModalOpen, setIsModalOpen, editData, setEditData }} />
-          {isModalOpen && <TransactionForm {...{ isModalOpen, setIsModalOpen, editData, setEditData }} />}
-        </div>
+      )}
+      <div className="col-span-4">
+        {/* <div className="flex justify-between items-center">
+          <h4 className="text-xl font-bold"> Transactions </h4>
+          <Button onClick={() => setIsModalOpen(!isModalOpen)} type="primary">
+            Create
+          </Button>
+        </div> */}
+        
+        <Summary />
+        <TransactionsList {...{ isModalOpen, setIsModalOpen, editData, setEditData }} />
+        {isModalOpen && <TransactionForm {...{ isModalOpen, setIsModalOpen, editData, setEditData }} />}
       </div>
     </div>
   );

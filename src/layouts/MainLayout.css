@@ -1,0 +1,5 @@
+header .main_nav,
+main.body {
+  height: calc(100vh - 7rem);
+  overflow-y: scroll;
+}

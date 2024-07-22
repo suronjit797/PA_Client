@@ -1,14 +1,17 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { useQuery } from "@tanstack/react-query";
 import { getProfileUserFn } from "../../transtackQuery/userApis";
+import { setUser } from "../../redux/features/authSlice";
 
 const Auth = ({ children, roles = [] }) => {
   const { isLogin, user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
-  useQuery({
+  const { data } = useQuery({
     queryKey: ["profile"],
     queryFn: getProfileUserFn,
     refetchOnMount: true,
@@ -16,13 +19,18 @@ const Auth = ({ children, roles = [] }) => {
     refetchOnReconnect: true,
   });
 
+  useEffect(() => {
+    if (data && Object.keys(data)) {
+      dispatch(setUser(data));
+    }
+  }, [data]);
+
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!isLogin) {
       navigate("/login");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLogin]);
 
   useEffect(() => {
@@ -32,7 +40,6 @@ const Auth = ({ children, roles = [] }) => {
         navigate(-1);
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roles, isLogin]);
 
   return <>{children}</>;

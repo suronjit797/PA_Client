@@ -2,28 +2,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { setAuth } from "../../redux/features/authSlice";
 import { IoMdLogOut } from "react-icons/io";
-import userRole, { authAccess } from "../../utils/userRole";
-import { useEffect, useState } from "react";
-import { FaHome, FaMoneyBill } from "react-icons/fa";
-import "./header.css";
-
-const generalRouts = [
-  { name: "Home", path: "/", icon: <FaHome /> },
-  { name: "Transaction", path: "/transaction", icon: <FaMoneyBill /> },
-];
-const adminRouts = [{ name: "User", path: "/user" }];
+import { useGetRoutes } from "../../utils/NavHelper";
 
 const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [routes] = useGetRoutes();
   const { user } = useSelector((state) => state.auth);
-
-  const [routs, setRouts] = useState(generalRouts);
-  useEffect(() => {
-    if (authAccess(userRole.admin).includes(user?.role)) {
-      setRouts([...generalRouts, ...adminRouts]);
-    }
-  }, [user?.role]);
 
   // handle logout
   const handleLogout = () => {
@@ -41,8 +26,8 @@ const Header = () => {
         <div className="bars"></div>
       </div>
       {/* nav */}
-      <div className="main_nav px-1 my-2 ">
-        {routs.map((item, index) => {
+      <div className="main_nav px-1 py-2 ">
+        {routes.map((item, index) => {
           return (
             <NavLink
               key={index}
@@ -62,12 +47,12 @@ const Header = () => {
 
       <div className="py-3 flex justify-between items-center bg-secondary  px-3 custom_shadow h-16">
         <Link className="font-bold " to="/profile">
-          <h5 className="font-bold">{user.name}</h5>
-          <div className="capitalize"> ({user.role})</div>
+          <h5 className="font-bold">{user?.name}</h5>
+          <div className="capitalize"> ({user?.role})</div>
         </Link>
         <div
           onClick={handleLogout}
-          className="logout text-xl p-2 rounded cursor-pointer \ text-red-500 hover:bg-[#ffffff15] active:bg-[#ffffff30] "
+          className="logout text-xl p-2 rounded cursor-pointer text-red-500 hover:bg-[#ffffff15] active:bg-[#ffffff30] "
         >
           <IoMdLogOut />
         </div>
