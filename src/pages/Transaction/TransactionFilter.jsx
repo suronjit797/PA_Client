@@ -1,17 +1,13 @@
-import { Button, Form, Input, InputNumber, Select, Slider, Switch } from "antd";
+import { Form, Input, InputNumber, Select, Slider } from "antd";
 import { useState } from "react";
 import { searchQueryFormat, transactionQueries, useSearchQuery } from "../../utils/useSearchQuery";
 import { transactionsOptions } from "../../utils/SelectOption";
-import { ReloadOutlined } from "@ant-design/icons";
+import PropTypes from "prop-types";
 
-const initData = { range: [] };
-
-function TransactionSideBar() {
-  const [form] = Form.useForm();
+function TransactionFilter({ form, formData, setFormData }) {
   const [searchQuery, setSearchQuery] = useSearchQuery(transactionQueries);
 
-  const [formData, setFormData] = useState(initData);
-  const [time, setTime] = useState(initData);
+  const [time, setTime] = useState();
   const [max] = useState(10000);
 
   const handleFinish = (values) => {
@@ -22,17 +18,10 @@ function TransactionSideBar() {
     const query = { ...rest, amount_$gte, amount_$lte };
     setSearchQuery(searchQueryFormat({ ...searchQuery, ...query, page: 1 }));
   };
-  const handleClear = () => {
-    form.resetFields();
-    setFormData(initData);
-    setSearchQuery({});
-  };
+
   return (
     <div>
-      <h4 className="mb-12 flex items-center justify-between">
-        <span className="text-xl font-bold ">Filter</span>
-        <Button onClick={handleClear} icon={<ReloadOutlined />} danger />
-      </h4>
+      {/* <Button onClick={handleClear} icon={<ReloadOutlined />} danger /> */}
 
       <Form
         onValuesChange={(_, values) => {
@@ -64,8 +53,17 @@ function TransactionSideBar() {
         <Form.Item name="type" label="Type" rules={[{ required: true, message: "Type is required" }]}>
           <Select placeholder="Select Type" options={transactionsOptions} />
         </Form.Item>
-        <Form.Item name="isPending" label="Is Pending?">
-          <Switch />
+        <Form.Item name="isPending" label="Status">
+          {/* <Switch /> */}
+          {/* <Radio name="isPending" id="isPending" value="true">
+            Pending
+          </Radio>
+          <Radio name="isPending" id="isPending" value="false">
+            Done
+          </Radio>
+          <Radio name="isPending" id="isPending" value="">
+            Nothing
+          </Radio> */}
         </Form.Item>
 
         {/* <div className="flex gap-5 justify-between items-center">
@@ -81,4 +79,10 @@ function TransactionSideBar() {
   );
 }
 
-export default TransactionSideBar;
+export default TransactionFilter;
+
+TransactionFilter.propTypes = {
+  form: PropTypes.object,
+  formData: PropTypes.object,
+  setFormData: PropTypes.func,
+};

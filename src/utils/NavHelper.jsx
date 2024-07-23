@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaHome, FaMoneyBill } from "react-icons/fa";
+import { FaHome, FaMoneyBill, FaUser } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import userRole, { authAccess } from "./userRole";
 
@@ -7,7 +7,9 @@ export const generalRouts = [
   { name: "Home", path: "/", icon: <FaHome /> },
   { name: "Transaction", path: "/transaction", icon: <FaMoneyBill /> },
 ];
-export const adminRouts = [{ name: "User", path: "/user" }];
+export const adminRouts = [
+  { name: "User", path: "/user", icon: <FaUser /> },
+];
 
 // routes
 export const useGetRoutes = () => {

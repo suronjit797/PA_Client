@@ -1,41 +1,40 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteTransactionFn, getAllTransactionFn } from "../../transtackQuery/transactionApis";
-import { Button, Spin, Table, Tag } from "antd";
+import { useMutation,  useQueryClient } from "@tanstack/react-query";
+import { deleteTransactionFn,  } from "../../transtackQuery/transactionApis";
+import { Button,  Table, Tag } from "antd";
 import { FaPenAlt, FaTrashAlt } from "react-icons/fa";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import Swal from "sweetalert2";
 import { searchQueryFormat, transactionQueries, useSearchQuery } from "../../utils/useSearchQuery";
 import { serialNumber } from "../../utils/helpers";
-import { useSelector } from "react-redux";
 
 const rowColor = {
   income: "green",
   expense: "red",
   give: "orange",
   take: "violet",
+  save: "sky",
+  withdraw: "fuchsia",
 };
 
 const StyledTable = styled(Table)`
   .ant-table-thead th.ant-table-cell {
-    background-color: rgb(243 243 243 / 98%);
+    // background-color: rgb(243 243 243 / 98%);
+  }
+  td.ant-table-cell {
+    border: transparent !important;
   }
   .ant-table-tbody > tr > td.ant-table-cell-row-hover {
     background-color: rgba(0, 0, 0, 0.05) !important;
   }
 `;
 
-function TransactionsList({ setIsModalOpen, setEditData }) {
+function TransactionsList({ setIsModalOpen, setEditData, data }) {
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useSearchQuery(transactionQueries);
-  const { user } = useSelector((state) => state.auth);
-
+  
   const { limit, page } = searchQuery;
-
-  const { data, isPending } = useQuery({
-    queryKey: ["Transactions", searchQuery],
-    queryFn: () => getAllTransactionFn({ ...searchQuery, user: user._id }),
-  });
+  
 
   const {
     mutate: remove,
@@ -43,10 +42,10 @@ function TransactionsList({ setIsModalOpen, setEditData }) {
     error,
     isPending: removePending,
   } = useMutation({
-    mutationKey: ["login"],
+    mutationKey: "removeTransaction",
     mutationFn: deleteTransactionFn,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["Transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["transactions"] });
     },
   });
 
@@ -78,9 +77,9 @@ function TransactionsList({ setIsModalOpen, setEditData }) {
     {
       title: "Type",
       render: (text, record, index) => (
-        <span key={index} className={`capitalize  text-${rowColor[record?.type]}-600`}>
+        <Tag key={index} className={`capitalize w-16 text-center font-bold border-0 bg-${rowColor[record?.type]}-600`}>
           {record?.type}
-        </span>
+        </Tag>
       ),
       key: "type",
       align: "center",
@@ -98,7 +97,9 @@ function TransactionsList({ setIsModalOpen, setEditData }) {
       render: (text, record, index) => (
         <Tag
           key={index}
-          className={`${record?.isPending ? "bg-red-400" : "bg-green-400"} text-white w-16 text-center font-bold`}
+          className={`${
+            record?.isPending ? "bg-yellow-400 text-yellow-800" : "bg-teal-600"
+          } border-0 w-16 text-center font-bold`}
         >
           {record?.isPending ? "Pending" : "Done"}
         </Tag>
@@ -130,19 +131,25 @@ function TransactionsList({ setIsModalOpen, setEditData }) {
   }
 
   return (
-    <Spin spinning={isPending}>
-      <span className="text-green-600 bg-green-100 bg-"></span>
-      <span className="text-red-600 bg-red-100 bg-"></span>
-      <span className="text-orange-600 bg-orange-100 bg-"></span>
-      <span className="text-violet-600 bg-violet-100 bg-"></span>
-      <div className="pt-4">
+    <>
+      <span className="bg-green-600"></span>
+      <span className="bg-red-600"></span>
+      <span className="bg-orange-600"></span>
+      <span className="bg-sky-600"></span>
+      <span className="bg-fuchsia-600 "></span>
+      <span className="bg-violet-600"></span>
+      <div className="pt-4 transactions">
         {Array.isArray(data?.data) && (
           <StyledTable
-            rowClassName={(item) => {
-              return `bg-${rowColor[item?.type] || "green"}-100 `;
-            }}
+            className="bg-secondary border-0"
+            // rowClassName={(item) => {
+            //   return `bg-${rowColor[item?.type] || "green"}-600 `;
+            // }}
+            rowClassName="border-0"
+            bordered={false}
             columns={columns}
             dataSource={data?.data}
+            responsive={true}
             pagination={{
               current: page || 1,
               pageSize: limit || 10,
@@ -151,12 +158,12 @@ function TransactionsList({ setIsModalOpen, setEditData }) {
               pageSizeOptions: [10, 20, 50],
               showSizeChanger: true,
               responsive: true,
-              // className:"!mb-0"
+              className: "px-3",
             }}
           />
         )}
       </div>
-    </Spin>
+    </>
   );
 }
 
@@ -166,5 +173,6 @@ TransactionsList.propTypes = {
   setIsModalOpen: PropTypes.func,
   setEditData: PropTypes.func,
   queryParams: PropTypes.object,
+  data: PropTypes.array,
   setQueryParams: PropTypes.func,
 };

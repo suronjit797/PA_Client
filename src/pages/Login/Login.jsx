@@ -17,7 +17,7 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isLogin } = useSelector((state) => state.auth);
-  const { mutate, isError, error, } = useMutation({
+  const { mutate, isError, error } = useMutation({
     mutationKey: ["login"],
     mutationFn: loginFunction,
     onSuccess: async (data) => {
@@ -123,7 +123,7 @@ const Login = () => {
           <h1 className=" h-[2px] rounded my-auto w-[40%] bg-gray-500" />
         </div>
         <div className="text-xl mt-0 text-center font-semibold">
-          Don't have an account?{" "}
+          Don't have an account?
           <Link to="/register" className=" text-xl text-[#BDE4A7] font-semibold">
             Sing Up
           </Link>

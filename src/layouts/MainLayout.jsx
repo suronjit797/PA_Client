@@ -5,15 +5,18 @@ import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
 import { useGetRoutes } from "../utils/NavHelper";
 import { useEffect, useState } from "react";
-import { FaBars } from "react-icons/fa";
+import { FaBars, FaMoon } from "react-icons/fa";
 import { MoreOutlined } from "@ant-design/icons";
-import { useDispatch } from "react-redux";
-import { setHeaderModel } from "../redux/features/helperSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { setTheme } from "../redux/features/themeSlice";
+import { FaSun } from "react-icons/fa6";
 
 const MainLayout = () => {
   const location = useLocation();
   const [routes] = useGetRoutes();
   const dispatch = useDispatch();
+
+  const { isDark } = useSelector(state=> state.theme)
 
   // state
   const [currentPage, setCurrentPage] = useState({});
@@ -48,9 +51,12 @@ const MainLayout = () => {
           <div className="w-full text-center">{currentPage?.name}</div>
           <div
             className=" select-none p-2 rounded cursor-pointer hover:bg-[#ffffff15] active:bg-[#ffffff30]"
-            onClick={() => dispatch(setHeaderModel())}
+            onClick={() => dispatch(setTheme())}
           >
-            <MoreOutlined />
+            {/* <MoreOutlined /> */}
+            {
+              isDark ? <FaMoon /> : <FaSun />
+            }
           </div>
         </div>
 

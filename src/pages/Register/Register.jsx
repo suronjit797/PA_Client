@@ -14,10 +14,10 @@ const Register = () => {
   const { mutate, isError, error } = useMutation({
     mutationKey: "creatUser",
     mutationFn: createUser,
-    onSuccess:async(data) => {
+    onSuccess: async (data) => {
       await Swal.fire({
         title: "Success!",
-        text: data.response?.message||"You have successfully registered.",
+        text: data.response?.message || "You have successfully registered.",
         icon: "success",
         confirmButtonText: "OK",
       });
@@ -165,7 +165,7 @@ const Register = () => {
           </Form.Item>
         </Form>
         <div className="text-xl text-center font-semibold">
-          Already Registered?{" "}
+          Already Registered?
           <Link to="/login" className=" text-xl text-[#BDE4A7] font-semibold">
             Sing In
           </Link>

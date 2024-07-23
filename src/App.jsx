@@ -1,14 +1,32 @@
 import { RouterProvider } from "react-router-dom";
 import "./App.css";
 import { useEffect } from "react";
-import { ConfigProvider } from "antd";
+import { ConfigProvider, theme } from "antd";
 import { routes } from "./routes/Routes";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
-// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { QueryCache, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { setAuth } from "./redux/features/authSlice";
 import axios from "axios";
+
+const customDarkTheme = {
+  token: {
+    colorBgBase: "#2c2c2c",
+    colorTextBase: "#f7f7f7",
+    colorWarning: "#ffc107",
+    colorError: "#dc3545",
+    colorSuccess: "#198754",
+    colorPrimary: "#0d6efd",
+    colorPrimaryHover: "#0c60d0",
+    colorBgDisabled: "#4b93fd",
+    colorInfo: "#0dcaf0",
+    wireframe: false,
+    fontSize: 16,
+    sizeStep: 5,
+  },
+  algorithm: [theme.darkAlgorithm, theme.compactAlgorithm],
+};
 
 function App() {
   const dispatch = useDispatch();
@@ -33,7 +51,6 @@ function App() {
     },
   });
 
-
   // net error
   useEffect(() => {
     if (!navigator.onLine) {
@@ -52,11 +69,14 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="">
-        <ConfigProvider>
-          <RouterProvider router={routes}></RouterProvider>
-        </ConfigProvider>
-      </div>{" "}
+      <ConfigProvider theme={customDarkTheme}>
+        <div className="">
+          <ConfigProvider>
+            <RouterProvider router={routes}></RouterProvider>
+          </ConfigProvider>
+        </div>
+      </ConfigProvider>
+      <ReactQueryDevtools />
     </QueryClientProvider>
   );
 }

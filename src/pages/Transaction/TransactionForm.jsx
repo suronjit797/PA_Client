@@ -14,7 +14,9 @@ const TransactionForm = ({ isModalOpen, editData, setIsModalOpen, setEditData })
     mutationKey: "createTransaction",
     mutationFn: createTransactionFn,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["Transactions"] });
+      console.log('createTransaction')
+      // queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["transactions"] });
     },
   });
 
@@ -22,7 +24,7 @@ const TransactionForm = ({ isModalOpen, editData, setIsModalOpen, setEditData })
     mutationKey: "createTransaction",
     mutationFn: updateTransactionFn,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["Transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["transactions"] });
     },
   });
 

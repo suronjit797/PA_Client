@@ -54,7 +54,7 @@ function TransactionSummary() {
             <td className="w-20 text-right pe-5">{savings.toFixed(2)}</td>
           </tr>
           <tr className="font-bold text-green-600 border-t border-gray-500">
-            <td>This Month Total Balance</td>{" "}
+            <td>This Month Total Balance</td>
             <td className="w-20 text-right pe-5"> {(balance + prevBalance).toFixed(2)} </td>
           </tr>
         </table>
