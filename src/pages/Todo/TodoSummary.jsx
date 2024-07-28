@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { getTransactionSummaryFn } from "../../transtackQuery/transactionApis";
+import { getTodoSummaryFn } from "../../transtackQuery/todoApis";
 
-function Summary() {
+function TodoSummary() {
   const { data = {} } = useQuery({
     queryKey: ["summary"],
-    queryFn: getTransactionSummaryFn,
+    queryFn: getTodoSummaryFn,
   });
 
   const { presentMonth, lastMonth } = data;
@@ -70,4 +70,4 @@ function Summary() {
   );
 }
 
-export default Summary;
+export default TodoSummary;

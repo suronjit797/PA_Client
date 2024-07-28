@@ -144,8 +144,8 @@ const UserList = () => {
   };
 
   return (
-    <div className="container mt-28 mx-auto">
-      <div className="flex items-center my-4">
+    <div className="container mx-auto">
+      <div className="flex items-center mb-2">
         <h1 className="items-center">User List</h1>
         <Link to="create" className="ms-auto mr-3 p-2 md:p-3 rounded bg-primary text-accent hover:text-accent-hover">
           <button className="font-semibold">Create User</button>

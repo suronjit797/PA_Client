@@ -1,56 +1,43 @@
-import TransactionFilter from "./TransactionFilter";
-import TransactionForm from "./TransactionForm";
 import { useState } from "react";
-import TransactionsList from "./TransactionsList";
-import TransactionSummary from "./TransactionSummary";
+import TodoFilter from "./TodoFilter";
+import TodoForm from "./TodoForm";
+import TodoList from "./TodoList";
 import { useSelector } from "react-redux";
 import { Button, Spin, Drawer, Form } from "antd";
 import { FaFilter, FaPlus } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
-import { getAllTransactionFn } from "../../transtackQuery/transactionApis";
-import { searchQueryFormat, transactionQueries, useSearchQuery } from "../../utils/useSearchQuery";
+import { getAllTodoFn } from "../../transtackQuery/todoApis";
+import { searchQueryFormat, todoQueries, useSearchQuery } from "../../utils/useSearchQuery";
 import { ReloadOutlined } from "@ant-design/icons";
 
-const initData = { range: [] };
-
-function Transactions() {
+function Todo() {
   const { user } = useSelector((state) => state.auth);
-  const [searchQuery, setSearchQuery] = useSearchQuery(transactionQueries);
+  const [searchQuery, setSearchQuery] = useSearchQuery(todoQueries);
   const [form] = Form.useForm();
 
-  const [formData, setFormData] = useState(initData);
+  const [formData, setFormData] = useState({});
   const [editData, setEditData] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const { data, isPending } = useQuery({
-    queryKey: ["transactions", searchQuery],
-    queryFn: () => getAllTransactionFn({ ...searchQuery, user: user._id }),
+    queryKey: ["todo", searchQuery],
+    queryFn: () => getAllTodoFn({ ...searchQuery, user: user._id }),
+    
   });
 
   const handleClear = () => {
     form.resetFields();
-    setFormData(initData);
+    setFormData({});
     setSearchQuery({});
   };
 
   return (
     <Spin spinning={isPending}>
       <div className="">
-        {/* {isHeaderModalOpen && (
-          <div className="">
-            
-          </div>
-        )} */}
         <div className="col-span-4">
-          {/* <div className="flex justify-between items-center">
-          <h4 className="text-xl font-bold"> Transactions </h4>
-          <Button onClick={() => setIsModalOpen(!isModalOpen)} type="primary">
-            Create
-          </Button>
-        </div> */}
           <div className="mb-3 flex items-center justify-between gap-3 bg-card  p-3 rounded-md">
-            <div className="font-bold"> Total Transactions: {data?.meta?.total || 0} </div>
+            <div className="font-bold"> Total Todo: {data?.meta?.total || 0} </div>
             <div className="flex gap-3">
               <Button
                 type="primary"
@@ -65,15 +52,15 @@ function Transactions() {
               )}
             </div>
           </div>
-          <TransactionSummary />
-          <TransactionsList {...{ isModalOpen, setIsModalOpen, editData, setEditData, data }} />
-          {isModalOpen && <TransactionForm {...{ isModalOpen, setIsModalOpen, editData, setEditData }} />}
+
+          <TodoList {...{ isModalOpen, setIsModalOpen, editData, setEditData, data }} />
+          {isModalOpen && <TodoForm {...{ isModalOpen, setIsModalOpen, editData, setEditData }} />}
           <Drawer
             title={<div className="text-end">Filter</div>}
             open={isDrawerOpen}
             onClose={() => setIsDrawerOpen(false)}
           >
-            <TransactionFilter {...{ form, formData, setFormData }} />
+            <TodoFilter {...{ form, formData, setFormData }} />
           </Drawer>
         </div>
       </div>
@@ -81,4 +68,4 @@ function Transactions() {
   );
 }
 
-export default Transactions;
+export default Todo;

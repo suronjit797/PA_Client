@@ -1,12 +1,12 @@
 import { useSearchParams } from "react-router-dom";
 
-export const transactionQueries = ["amount_$gte", "amount_$lte", "isPending", "type"]
-
-
-
+export const globalQueries = ["page", "limit", "query", "sortBy", "sortOrder"];
+// others
+export const transactionQueries = ["amount_$gte", "amount_$lte", "isPending", "type"];
+export const todoQueries = ["isDone", "important"];
 
 export const useSearchQuery = (keys) => {
-  let params = ["page", "limit", "query"];
+  let params = [...globalQueries];
   const [query, setQuery] = useSearchParams();
   const obj = {};
   if (Array.isArray(keys)) {

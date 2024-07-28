@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { FaHome, FaMoneyBill, FaUser } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import userRole, { authAccess } from "./userRole";
+import { AiFillWechatWork } from "react-icons/ai";
 
 export const generalRouts = [
   { name: "Home", path: "/", icon: <FaHome /> },
   { name: "Transaction", path: "/transaction", icon: <FaMoneyBill /> },
+  { name: "Todo", path: "/todo", icon: <AiFillWechatWork /> },
 ];
 export const adminRouts = [
   { name: "User", path: "/user", icon: <FaUser /> },

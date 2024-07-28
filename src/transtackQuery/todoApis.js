@@ -1,12 +1,12 @@
 import axios from "axios";
 
-const endpoint = "/transactions/";
+const endpoint = "/todo/";
 
-export const createTransactionFn = (body) => {
+export const createTodoFn = (body) => {
   return axios.post(endpoint, body);
 };
 
-export const getAllTransactionFn = async (params) => {
+export const getAllTodoFn = async (params) => {
   const { data } = await axios.get(endpoint, { params });
   return {
     data: data.data || [],
@@ -14,26 +14,26 @@ export const getAllTransactionFn = async (params) => {
   };
 };
 
-export const getSingleUTransactionFn = async (id) => {
+export const getSingleUTodoFn = async (id) => {
   const { data } = await axios.get(endpoint + id);
   return data?.data || {};
 };
 
-export const updateTransactionFn = ({ _id, ...body }) => {
+export const updateTodoFn = ({ _id, ...body }) => {
   return axios.put(endpoint + _id, body);
 };
 
-export const deleteTransactionFn = (id) => {
+export const deleteTodoFn = (id) => {
   return axios.delete(endpoint + id);
 };
 
-export const getTransactionSummaryFn = async () => {
+export const getTodoSummaryFn = async () => {
   const { data } = await axios.get(endpoint + "summary");
   return data?.data || {};
 };
 
 
-export const getTransactionOverallSummaryFn = async () => {
+export const getTodoOverallSummaryFn = async () => {
   const { data } = await axios.get(endpoint + "overall");
   return data?.data || {};
 };

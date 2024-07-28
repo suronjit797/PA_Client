@@ -11,6 +11,7 @@ import UserCreate from "../pages/User/UserCreate";
 import UserUpdate from "../pages/User/UserUpdate";
 import Transactions from "../pages/Transaction/Transactions";
 import TransactionSummary from "../pages/TransactionSummary/TransactionSummary";
+import Todo from "../pages/Todo/Todo";
 
 export const routes = createBrowserRouter([
   {
@@ -62,7 +63,7 @@ export const routes = createBrowserRouter([
           </Auth>
         ),
       },
-      // money
+      // transactions
       {
         path: "transaction",
         element: (
@@ -80,6 +81,15 @@ export const routes = createBrowserRouter([
         ),
       },
 
+      // todo
+      {
+        path: "todo",
+        element: (
+          <Auth>
+            <Todo />
+          </Auth>
+        ),
+      },
       {
         path: "*",
         element: <NotFound />,
