@@ -6,7 +6,6 @@ import Footer from "../components/Footer/Footer";
 import { useGetRoutes } from "../utils/NavHelper";
 import { useEffect, useState } from "react";
 import { FaBars, FaMoon } from "react-icons/fa";
-import { MoreOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { setTheme } from "../redux/features/themeSlice";
 import { FaSun } from "react-icons/fa6";

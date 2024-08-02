@@ -12,11 +12,18 @@ import UserUpdate from "../pages/User/UserUpdate";
 import Transactions from "../pages/Transaction/Transactions";
 import TransactionSummary from "../pages/TransactionSummary/TransactionSummary";
 import Todo from "../pages/Todo/Todo";
+import Calender from "../pages/Calender/Calender";
+import Routine from "../pages/Routine/Routine";
+import Event from "../pages/Events/Event";
 
 export const routes = createBrowserRouter([
   {
     path: "/",
-    element: <MainLayout />,
+    element: (
+      <Auth>
+        <MainLayout />
+      </Auth>
+    ),
     children: [
       {
         index: true,
@@ -63,37 +70,16 @@ export const routes = createBrowserRouter([
           </Auth>
         ),
       },
-      // transactions
-      {
-        path: "transaction",
-        element: (
-          <Auth>
-            <Transactions />
-          </Auth>
-        ),
-      },
-      {
-        path: "summary",
-        element: (
-          <Auth>
-            <TransactionSummary />
-          </Auth>
-        ),
-      },
+      // services routes
+      { path: "transaction", element: <Transactions /> },
+      { path: "summary", element: <TransactionSummary /> },
+      { path: "calender", element: <Calender /> },
+      { path: "routine", element: <Routine /> },
+      { path: "todo", element: <Todo /> },
+      { path: "event", element: <Event /> },
 
-      // todo
-      {
-        path: "todo",
-        element: (
-          <Auth>
-            <Todo />
-          </Auth>
-        ),
-      },
-      {
-        path: "*",
-        element: <NotFound />,
-      },
+      //  not found route
+      { path: "*", element: <NotFound /> },
     ],
   },
   { path: "/login", element: <Login /> },

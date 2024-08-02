@@ -24,13 +24,12 @@ function TodoList({ setIsModalOpen, setEditData, data }) {
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useSearchQuery(todoQueries);
 
-  const { mutate: update, isPending: updatePending,  } = useMutation({
+  const { mutate: update, isPending: updatePending } = useMutation({
     mutationKey: "updateTodo",
     mutationFn: updateTodoFn,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["todo"] });
     },
-
   });
 
   const { limit, page } = searchQuery;

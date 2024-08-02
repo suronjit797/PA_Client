@@ -1,6 +1,6 @@
-import { useMutation,  useQueryClient } from "@tanstack/react-query";
-import { deleteTransactionFn,  } from "../../transtackQuery/transactionApis";
-import { Button,  Table, Tag } from "antd";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteTransactionFn } from "../../transtackQuery/transactionApis";
+import { Button, Table, Tag } from "antd";
 import { FaPenAlt, FaTrashAlt } from "react-icons/fa";
 import styled from "styled-components";
 import PropTypes from "prop-types";
@@ -32,9 +32,8 @@ const StyledTable = styled(Table)`
 function TransactionsList({ setIsModalOpen, setEditData, data }) {
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useSearchQuery(transactionQueries);
-  
+
   const { limit, page } = searchQuery;
-  
 
   const {
     mutate: remove,
@@ -62,6 +61,7 @@ function TransactionsList({ setIsModalOpen, setEditData, data }) {
     setSearchQuery(searchQueryFormat({ ...searchQuery, page, limit }));
   };
 
+  // todo: have to make dynamically filter
   const columns = [
     {
       title: "No.",

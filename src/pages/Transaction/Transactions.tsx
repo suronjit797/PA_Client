@@ -37,18 +37,8 @@ function Transactions() {
   return (
     <Spin spinning={isPending}>
       <div className="">
-        {/* {isHeaderModalOpen && (
-          <div className="">
-            
-          </div>
-        )} */}
         <div className="col-span-4">
-          {/* <div className="flex justify-between items-center">
-          <h4 className="text-xl font-bold"> Transactions </h4>
-          <Button onClick={() => setIsModalOpen(!isModalOpen)} type="primary">
-            Create
-          </Button>
-        </div> */}
+          {/* secondary nav for create and filter */}
           <div className="mb-3 flex items-center justify-between gap-3 bg-card  p-3 rounded-md">
             <div className="font-bold"> Total Transactions: {data?.meta?.total || 0} </div>
             <div className="flex gap-3">
@@ -65,9 +55,15 @@ function Transactions() {
               )}
             </div>
           </div>
+
+          {/* summary */}
           <TransactionSummary />
+
+          {/* list */}
           <TransactionsList {...{ isModalOpen, setIsModalOpen, editData, setEditData, data }} />
           {isModalOpen && <TransactionForm {...{ isModalOpen, setIsModalOpen, editData, setEditData }} />}
+
+          {/* filter drawer */}
           <Drawer
             title={<div className="text-end">Filter</div>}
             open={isDrawerOpen}

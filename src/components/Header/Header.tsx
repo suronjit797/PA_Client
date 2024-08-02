@@ -3,6 +3,7 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { setAuth } from "../../redux/features/authSlice";
 import { IoMdLogOut } from "react-icons/io";
 import { useGetRoutes } from "../../utils/NavHelper";
+import { FaRegCircleUser } from "react-icons/fa6";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -46,9 +47,12 @@ const Header = () => {
       </div>
 
       <div className="py-3 flex justify-between items-center bg-secondary  px-3 custom_shadow h-16">
-        <Link className="font-bold " to="/profile">
-          <h5 className="font-bold">{user?.name}</h5>
-          <div className="capitalize"> ({user?.role})</div>
+        <Link className="font-bold flex items-center space-x-3" to="/profile">
+          <FaRegCircleUser className="text-3xl" />
+          <div>
+            <h5 className="font-bold">{user?.name}</h5>
+            <div className="capitalize"> ({user?.role})</div>
+          </div>
         </Link>
         <div
           onClick={handleLogout}
