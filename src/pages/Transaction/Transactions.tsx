@@ -1,27 +1,27 @@
 import TransactionFilter from "./TransactionFilter";
 import TransactionForm from "./TransactionForm";
-import { useState } from "react";
+import React, { useState } from "react";
 import TransactionsList from "./TransactionsList";
 import TransactionSummary from "./TransactionSummary";
-import { useSelector } from "react-redux";
 import { Button, Spin, Drawer, Form } from "antd";
 import { FaFilter, FaPlus } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 import { getAllTransactionFn } from "../../transtackQuery/transactionApis";
 import { searchQueryFormat, transactionQueries, useSearchQuery } from "../../utils/useSearchQuery";
 import { ReloadOutlined } from "@ant-design/icons";
+import { useAppSelector } from "../../redux/store";
 
 const initData = { range: [] };
 
-function Transactions() {
-  const { user } = useSelector((state) => state.auth);
+const Transactions: React.FC = () => {
+  const { user } = useAppSelector((state) => state.auth);
   const [searchQuery, setSearchQuery] = useSearchQuery(transactionQueries);
   const [form] = Form.useForm();
 
-  const [formData, setFormData] = useState(initData);
-  const [editData, setEditData] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [formData, setFormData] = useState<{ [key: string]: any }>(initData);
+  const [editData, setEditData] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
 
   const { data, isPending } = useQuery({
     queryKey: ["transactions", searchQuery],
@@ -49,7 +49,7 @@ function Transactions() {
                 }}
                 icon={<FaPlus />}
               />
-              <Button type="" icon={<FaFilter />} onClick={() => setIsDrawerOpen(!isDrawerOpen)} />
+              <Button icon={<FaFilter />} onClick={() => setIsDrawerOpen(!isDrawerOpen)} />
               {Object?.keys(searchQueryFormat(searchQuery)).length > 0 && (
                 <Button type="primary" danger icon={<ReloadOutlined />} onClick={handleClear} />
               )}
@@ -60,7 +60,7 @@ function Transactions() {
           <TransactionSummary />
 
           {/* list */}
-          <TransactionsList {...{ isModalOpen, setIsModalOpen, editData, setEditData, data }} />
+          <TransactionsList {...{ setIsModalOpen, setEditData, data }} />
           {isModalOpen && <TransactionForm {...{ isModalOpen, setIsModalOpen, editData, setEditData }} />}
 
           {/* filter drawer */}
@@ -75,6 +75,6 @@ function Transactions() {
       </div>
     </Spin>
   );
-}
+};
 
 export default Transactions;

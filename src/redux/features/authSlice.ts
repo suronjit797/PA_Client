@@ -1,5 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+interface IState {
+  token: string;
+  isLogin: boolean;
+  user: { [key: string]: string };
+}
+
 const initialState = {
   token: "",
   isLogin: false,

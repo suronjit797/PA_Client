@@ -1,29 +1,39 @@
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, URLSearchParamsInit } from "react-router-dom";
 
-export const globalQueries = ["page", "limit", "query", "sortBy", "sortOrder"];
-// others
-export const transactionQueries = ["amount_$gte", "amount_$lte", "isPending", "type"];
-export const todoQueries = ["isDone", "important"];
+export const globalQueries: string[] = ["page", "limit", "query", "sortBy", "sortOrder"];
+export const transactionQueries: string[] = ["amount_$gte", "amount_$lte", "isPending", "type"];
+export const todoQueries: string[] = ["isDone", "important"];
 
-export const useSearchQuery = (keys) => {
+type SearchQueryReturn = [
+  { [key: string]: string | null },
+  (nextInit: URLSearchParamsInit, navigateOptions?: { replace?: boolean; state?: any }) => void
+];
+
+export const useSearchQuery = (keys?: string | string[]): SearchQueryReturn => {
   let params = [...globalQueries];
   const [query, setQuery] = useSearchParams();
-  const obj = {};
+  const obj: { [key: string]: string | null } = {};
+
   if (Array.isArray(keys)) {
     params = [...params, ...keys];
   } else if (keys) {
     params = [...params, keys];
   }
+
   params.forEach((k) => (obj[k] = query.get(k)));
   return [obj, setQuery];
 };
 
-export const searchQueryFormat = (query) => {
-  const obj = {};
+type QueryObject = { [key: string]: any };
+
+export const searchQueryFormat = (query: QueryObject): QueryObject => {
+  const obj: QueryObject = {};
+
   Object.entries(query).forEach(([k, v]) => {
-    if (k && (v || [true, false].includes(v)) && !["undefined"].includes(v)) {
+    if (k && v !== undefined && !["undefined"].includes(String(v))) {
       obj[k] = v;
     }
   });
+
   return obj;
 };

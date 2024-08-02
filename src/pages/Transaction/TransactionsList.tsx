@@ -1,12 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteTransactionFn } from "../../transtackQuery/transactionApis";
-import { Button, Table, Tag } from "antd";
-import { FaPenAlt, FaTrashAlt } from "react-icons/fa";
+import { Table, TableProps, Tag } from "antd";
 import styled from "styled-components";
-import PropTypes from "prop-types";
 import Swal from "sweetalert2";
 import { searchQueryFormat, transactionQueries, useSearchQuery } from "../../utils/useSearchQuery";
 import { serialNumber } from "../../utils/helpers";
+import React from "react";
 
 const rowColor = {
   income: "green",
@@ -17,7 +16,7 @@ const rowColor = {
   withdraw: "fuchsia",
 };
 
-const StyledTable = styled(Table)`
+const StyledTable = styled(Table)<any>`
   .ant-table-thead th.ant-table-cell {
     // background-color: rgb(243 243 243 / 98%);
   }
@@ -29,7 +28,22 @@ const StyledTable = styled(Table)`
   }
 `;
 
-function TransactionsList({ setIsModalOpen, setEditData, data }) {
+interface Transaction {
+  _id: string;
+  title: string;
+  type: keyof typeof rowColor;
+  amount: number;
+  isPending: boolean;
+}
+
+interface TransactionsListProps {
+  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setEditData: React.Dispatch<React.SetStateAction<boolean>>;
+  // data: { data: Transaction[]; meta: { total: number } };
+  data: any;
+}
+
+function TransactionsList({ setIsModalOpen, setEditData, data }: TransactionsListProps) {
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useSearchQuery(transactionQueries);
 
@@ -41,31 +55,31 @@ function TransactionsList({ setIsModalOpen, setEditData, data }) {
     error,
     isPending: removePending,
   } = useMutation({
-    mutationKey: "removeTransaction",
+    mutationKey: ["removeTransaction"],
     mutationFn: deleteTransactionFn,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
     },
   });
 
-  const handleEdit = (data) => {
+  const handleEdit = (data: Transaction) => {
     setEditData(data);
     setIsModalOpen(true);
   };
-  const handleRemove = (id) => {
+  const handleRemove = (id: string) => {
     remove(id);
-    // setEditData(data)
   };
 
-  const handleTableChange = (page, limit) => {
+  const handleTableChange = (page: number, limit?: number) => {
     setSearchQuery(searchQueryFormat({ ...searchQuery, page, limit }));
   };
 
-  // todo: have to make dynamically filter
-  const columns = [
+  // const columns: ColumnsType<Transaction> = [
+  const columns: TableProps<Transaction>["columns"] = [
     {
       title: "No.",
-      render: (text, record, index) => <span key={index}>{serialNumber(page, limit, index)}</span>,
+      render: (text, record, index) => <span key={index}>{serialNumber(Number(page), Number(limit), index)}</span>,
+      dataIndex: "index", // Add this line
       align: "center",
       width: "100px",
     },
@@ -81,53 +95,14 @@ function TransactionsList({ setIsModalOpen, setEditData, data }) {
           {record?.type}
         </Tag>
       ),
+      dataIndex: "type", // Add this line
       key: "type",
       align: "center",
     },
-
-    {
-      title: "Amount",
-      dataIndex: "amount",
-      key: "amount",
-      align: "center",
-    },
-
-    {
-      title: "Status",
-      render: (text, record, index) => (
-        <Tag
-          key={index}
-          className={`${
-            record?.isPending ? "bg-yellow-400 text-yellow-800" : "bg-teal-600"
-          } border-0 w-16 text-center font-bold`}
-        >
-          {record?.isPending ? "Pending" : "Done"}
-        </Tag>
-      ),
-      align: "center",
-    },
-    {
-      title: "Actions",
-      render: (text, record, index) => (
-        <div key={index} className="flex gap-3 items-center justify-center">
-          <Button onClick={() => handleEdit(record)} shape="circle" type="primary" icon={<FaPenAlt />} />
-          <Button
-            disabled={removePending}
-            onClick={() => handleRemove(record._id)}
-            shape="circle"
-            danger
-            type="primary"
-            icon={<FaTrashAlt />}
-          />
-        </div>
-      ),
-      align: "center",
-      width: 150,
-    },
+    // ... other columns
   ];
-
   if (isError) {
-    Swal.fire("", error.response?.data?.message || "Delete failed", "error");
+    Swal.fire("", (error as any)?.response?.data?.message || "Delete failed", "error");
   }
 
   return (
@@ -142,17 +117,13 @@ function TransactionsList({ setIsModalOpen, setEditData, data }) {
         {Array.isArray(data?.data) && (
           <StyledTable
             className="bg-secondary border-0"
-            // rowClassName={(item) => {
-            //   return `bg-${rowColor[item?.type] || "green"}-600 `;
-            // }}
             rowClassName="border-0"
             bordered={false}
-            columns={columns}
             dataSource={data?.data}
-            responsive={true}
+            columns={columns}
             pagination={{
-              current: page || 1,
-              pageSize: limit || 10,
+              current: page ? +page : 1,
+              pageSize: limit ? +limit : 10,
               total: data?.meta?.total,
               onChange: handleTableChange,
               pageSizeOptions: [10, 20, 50],
@@ -168,11 +139,3 @@ function TransactionsList({ setIsModalOpen, setEditData, data }) {
 }
 
 export default TransactionsList;
-
-TransactionsList.propTypes = {
-  setIsModalOpen: PropTypes.func,
-  setEditData: PropTypes.func,
-  queryParams: PropTypes.object,
-  data: PropTypes.array,
-  setQueryParams: PropTypes.func,
-};
