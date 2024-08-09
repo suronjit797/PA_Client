@@ -61,7 +61,7 @@ const Transactions: React.FC = () => {
 
           {/* list */}
           <TransactionsList {...{ setIsModalOpen, setEditData, data }} />
-          {isModalOpen && <TransactionForm {...{ isModalOpen, setIsModalOpen, editData, setEditData }} />}
+          {isModalOpen && <TransactionForm {...{ isModalOpen, editData, setIsModalOpen, setEditData  }} />}
 
           {/* filter drawer */}
           <Drawer
