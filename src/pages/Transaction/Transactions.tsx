@@ -10,6 +10,7 @@ import { getAllTransactionFn } from "../../transtackQuery/transactionApis";
 import { searchQueryFormat, transactionQueries, useSearchQuery } from "../../utils/useSearchQuery";
 import { ReloadOutlined } from "@ant-design/icons";
 import { useAppSelector } from "../../redux/store";
+import { ITransaction } from "./TransactionsInterface";
 
 const initData = { range: [] };
 
@@ -19,7 +20,7 @@ const Transactions: React.FC = () => {
   const [form] = Form.useForm();
 
   const [formData, setFormData] = useState<{ [key: string]: any }>(initData);
-  const [editData, setEditData] = useState<boolean>(false);
+  const [editData, setEditData] = useState<Partial<ITransaction>>({});
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
 
@@ -61,7 +62,7 @@ const Transactions: React.FC = () => {
 
           {/* list */}
           <TransactionsList {...{ setIsModalOpen, setEditData, data }} />
-          {isModalOpen && <TransactionForm {...{ isModalOpen, editData, setIsModalOpen, setEditData  }} />}
+          {isModalOpen && <TransactionForm {...{ isModalOpen, editData, setIsModalOpen, setEditData }} />}
 
           {/* filter drawer */}
           <Drawer

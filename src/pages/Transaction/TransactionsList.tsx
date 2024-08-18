@@ -6,8 +6,9 @@ import Swal from "sweetalert2";
 import { searchQueryFormat, transactionQueries, useSearchQuery } from "../../utils/useSearchQuery";
 import { serialNumber } from "../../utils/helpers";
 import React from "react";
+import { ITransaction } from "./TransactionsInterface";
 
-const rowColor = {
+const rowColor: { [key: string]: any } = {
   income: "green",
   expense: "red",
   give: "orange",
@@ -28,18 +29,9 @@ const StyledTable = styled(Table)<any>`
   }
 `;
 
-interface Transaction {
-  _id: string;
-  title: string;
-  type: keyof typeof rowColor;
-  amount: number;
-  isPending: boolean;
-}
-
 interface TransactionsListProps {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setEditData: React.Dispatch<React.SetStateAction<boolean>>;
-  // data: { data: Transaction[]; meta: { total: number } };
+  setEditData: React.Dispatch<React.SetStateAction<Partial<ITransaction>>>;
   data: any;
 }
 
@@ -62,7 +54,7 @@ function TransactionsList({ setIsModalOpen, setEditData, data }: TransactionsLis
     },
   });
 
-  const handleEdit = (data: Transaction) => {
+  const handleEdit = (data: ITransaction) => {
     setEditData(data);
     setIsModalOpen(true);
   };
@@ -74,8 +66,8 @@ function TransactionsList({ setIsModalOpen, setEditData, data }: TransactionsLis
     setSearchQuery(searchQueryFormat({ ...searchQuery, page, limit }));
   };
 
-  // const columns: ColumnsType<Transaction> = [
-  const columns: TableProps<Transaction>["columns"] = [
+  // const columns: ColumnsType<ITransaction> = [
+  const columns: TableProps<ITransaction>["columns"] = [
     {
       title: "No.",
       render: (text, record, index) => <span key={index}>{serialNumber(Number(page), Number(limit), index)}</span>,

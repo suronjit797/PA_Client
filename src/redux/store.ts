@@ -4,8 +4,7 @@ import { persistReducer, persistStore } from "redux-persist";
 import authReducer from "./features/authSlice";
 import helperReducer from "./features/helperSlice";
 import themeReducer from "./features/themeSlice";
-import { useDispatch, TypedUseSelectorHook, useSelector } from "react-redux";
-import type { ThunkAction, Action } from "@reduxjs/toolkit";
+import { useDispatch, useSelector } from "react-redux";
 
 const persistConfig = {
   key: "root",
@@ -28,10 +27,9 @@ export const store = configureStore({
 export const persistor = persistStore(store);
 
 // Define RootState and AppDispatch types
-export type RootState = ReturnType<typeof store.getState>
-export type AppDispatch = typeof store.dispatch
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 
 // Define a custom hook for useDispatch
-export const useAppDispatch = useDispatch.withTypes<AppDispatch>()
-export const useAppSelector = useSelector.withTypes<RootState>()
-
+export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
+export const useAppSelector = useSelector.withTypes<RootState>();

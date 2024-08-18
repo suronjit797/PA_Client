@@ -1,12 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-interface IState {
+export interface IState {
   token: string;
   isLogin: boolean;
   user: { [key: string]: string };
 }
 
-const initialState = {
+const initialState: IState = {
   token: "",
   isLogin: false,
   user: {},
