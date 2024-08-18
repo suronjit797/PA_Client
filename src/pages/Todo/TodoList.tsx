@@ -3,10 +3,16 @@ import { deleteTodoFn, updateTodoFn } from "../../transtackQuery/todoApis";
 import { Button, Table } from "antd";
 import { FaPenAlt, FaThumbsDown, FaThumbsUp, FaTrashAlt } from "react-icons/fa";
 import styled from "styled-components";
-import PropTypes from "prop-types";
 import Swal from "sweetalert2";
 import { searchQueryFormat, todoQueries, useSearchQuery } from "../../utils/useSearchQuery";
 import { serialNumber } from "../../utils/helpers";
+import { ITodo } from "./TodoInterface";
+
+interface TodoListProps {
+  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setEditData: React.Dispatch<React.SetStateAction<Partial<ITodo>>>;
+  data: any;
+}
 
 const StyledTable = styled(Table)`
   .ant-table-thead th.ant-table-cell {
@@ -20,12 +26,12 @@ const StyledTable = styled(Table)`
   }
 `;
 
-function TodoList({ setIsModalOpen, setEditData, data }) {
+const TodoList: React.FC<TodoListProps> = ({ setIsModalOpen, setEditData, data }) => {
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useSearchQuery(todoQueries);
 
   const { mutate: update, isPending: updatePending } = useMutation({
-    mutationKey: "updateTodo",
+    mutationKey: ["updateTodo"],
     mutationFn: updateTodoFn,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["todo"] });
@@ -40,7 +46,7 @@ function TodoList({ setIsModalOpen, setEditData, data }) {
     error,
     isPending: removePending,
   } = useMutation({
-    mutationKey: "removeTodo",
+    mutationKey: ["removeTodo"],
     mutationFn: deleteTodoFn,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["todo"] });
@@ -149,14 +155,7 @@ function TodoList({ setIsModalOpen, setEditData, data }) {
       </div>
     </>
   );
-}
+};
 
 export default TodoList;
 
-TodoList.propTypes = {
-  setIsModalOpen: PropTypes.func,
-  setEditData: PropTypes.func,
-  queryParams: PropTypes.object,
-  data: PropTypes.array,
-  setQueryParams: PropTypes.func,
-};

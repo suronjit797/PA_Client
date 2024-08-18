@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from "axios";
-import { ITransaction, ITransactionMeta } from "../pages/Transaction/TransactionsInterface";
+import { ITransaction } from "../pages/Transaction/TransactionsInterface";
+import { IMeta } from "../interfaces/interfaces";
 
 const endpoint = "/transactions/";
 
@@ -11,7 +12,7 @@ export const createTransactionFn = (body: ITransaction): Promise<AxiosResponse<I
 };
 
 // Function to get all transactions with metadata
-export const getAllTransactionFn = async (params?: any): Promise<{ data: ITransaction[]; meta: ITransactionMeta }> => {
+export const getAllTransactionFn = async (params?: any): Promise<{ data: ITransaction[]; meta: IMeta }> => {
   const { data } = await axios.get(endpoint, { params });
   return {
     data: data.data || [],

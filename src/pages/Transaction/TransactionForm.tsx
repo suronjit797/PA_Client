@@ -87,9 +87,11 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ isModalOpen, editData
           <InputNumber placeholder="Input Amount" className="w-full" />
         </Form.Item>
 
-        <Form.Item name="isPending" label="Is Pending?" valuePropName="checked">
-          <Switch />
-        </Form.Item>
+        {/* {!editData?._id && (
+          <Form.Item name="isPending" label="Status">
+            <Switch defaultChecked={editData?.isPending} />
+          </Form.Item>
+        )} */}
 
         <div className="flex justify-end space-x-2">
           <Button key="back" htmlType="button" danger onClick={handleCancel}>

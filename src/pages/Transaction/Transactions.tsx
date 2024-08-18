@@ -27,6 +27,7 @@ const Transactions: React.FC = () => {
   const { data, isPending } = useQuery({
     queryKey: ["transactions", searchQuery],
     queryFn: () => getAllTransactionFn({ ...searchQuery, user: user._id }),
+    placeholderData: (previousData) => previousData,
   });
 
   const handleClear = () => {
@@ -61,7 +62,7 @@ const Transactions: React.FC = () => {
           <TransactionSummary />
 
           {/* list */}
-          <TransactionsList {...{ setIsModalOpen, setEditData, data }} />
+          <TransactionsList {...{ setIsModalOpen, setEditData, data, isPending }} />
           {isModalOpen && <TransactionForm {...{ isModalOpen, editData, setIsModalOpen, setEditData }} />}
 
           {/* filter drawer */}

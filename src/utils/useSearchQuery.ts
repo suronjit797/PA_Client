@@ -20,7 +20,11 @@ export const useSearchQuery = (keys?: string | string[]): SearchQueryReturn => {
     params = [...params, keys];
   }
 
-  params.forEach((k) => (obj[k] = query.get(k)));
+  params.forEach((k) => {
+    if (Boolean(query.get(k))) {
+      obj[k] = query.get(k);
+    }
+  });
   return [obj, setQuery];
 };
 

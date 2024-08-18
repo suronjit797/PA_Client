@@ -53,9 +53,9 @@ function TransactionFilter({ form, formData, setFormData }) {
         <Form.Item name="type" label="Type" rules={[{ required: true, message: "Type is required" }]}>
           <Select placeholder="Select Type" options={transactionsOptions} />
         </Form.Item>
-        <Form.Item name="isPending" label="Status">
-          {/* <Switch /> */}
-          {/* <Radio name="isPending" id="isPending" value="true">
+        {/* <Form.Item name="isPending" label="Status"> */}
+        {/* <Switch /> */}
+        {/* <Radio name="isPending" id="isPending" value="true">
             Pending
           </Radio>
           <Radio name="isPending" id="isPending" value="false">
@@ -64,7 +64,7 @@ function TransactionFilter({ form, formData, setFormData }) {
           <Radio name="isPending" id="isPending" value="">
             Nothing
           </Radio> */}
-        </Form.Item>
+        {/* </Form.Item> */}
 
         {/* <div className="flex gap-5 justify-between items-center">
           <Button type="primary" htmlType="submit">
