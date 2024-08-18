@@ -1,12 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteTodoFn, updateTodoFn } from "../../transtackQuery/todoApis";
-import { Button, Table } from "antd";
+import { Button, Table, TableColumnsType } from "antd";
 import { FaPenAlt, FaThumbsDown, FaThumbsUp, FaTrashAlt } from "react-icons/fa";
 import styled from "styled-components";
 import Swal from "sweetalert2";
 import { searchQueryFormat, todoQueries, useSearchQuery } from "../../utils/useSearchQuery";
 import { serialNumber } from "../../utils/helpers";
 import { ITodo } from "./TodoInterface";
+import { IoMdStar, IoMdStarOutline } from "react-icons/io";
 
 interface TodoListProps {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -24,7 +25,7 @@ const StyledTable = styled(Table)`
   .ant-table-tbody > tr > td.ant-table-cell-row-hover {
     background-color: rgba(0, 0, 0, 0.05) !important;
   }
-`;
+` as any;
 
 const TodoList: React.FC<TodoListProps> = ({ setIsModalOpen, setEditData, data }) => {
   const queryClient = useQueryClient();
@@ -53,23 +54,25 @@ const TodoList: React.FC<TodoListProps> = ({ setIsModalOpen, setEditData, data }
     },
   });
 
-  const handleEdit = (data) => {
+  const handleEdit = (data: ITodo) => {
     setEditData(data);
     setIsModalOpen(true);
   };
-  const handleRemove = (id) => {
+  const handleRemove = (id: string) => {
     remove(id);
     // setEditData(data)
   };
 
-  const handleTableChange = (page, limit) => {
+  const handleTableChange = (page: number, limit: number) => {
     setSearchQuery(searchQueryFormat({ ...searchQuery, page, limit }));
   };
 
-  const columns = [
+  const columns: TableColumnsType<ITodo> = [
     {
       title: "No.",
-      render: (text, record, index) => <span key={index}>{serialNumber(page, limit, index)}</span>,
+      render: (_text, _record, index) => (
+        <span key={index}>{serialNumber(Number(data?.meta?.page || 1), Number(data?.meta?.limit || 10), index)}</span>
+      ),
       align: "center",
       width: "100px",
     },
@@ -78,13 +81,15 @@ const TodoList: React.FC<TodoListProps> = ({ setIsModalOpen, setEditData, data }
       dataIndex: "title",
       key: "title",
       // sorter: () => 1,
-      sorter: (a, b, order) =>
-        setSearchQuery(searchQueryFormat({ ...searchQuery, page, limit, sortBy: "title", sortOrder: order + "ing" })),
+      sorter: (_a, _b, order) =>
+        setSearchQuery(
+          searchQueryFormat({ ...searchQuery, page, limit, sortBy: "title", sortOrder: order + "ing" })
+        ) as any,
     },
 
     {
       title: "Status",
-      render: (text, record, index) => (
+      render: (_text, record, index) => (
         <Button
           key={index}
           className={` cursor-pointer select-none border-0 min-w-24 font-normal text-center !shadow-none text-xs`}
@@ -99,12 +104,33 @@ const TodoList: React.FC<TodoListProps> = ({ setIsModalOpen, setEditData, data }
       ),
       align: "center",
       width: 100,
-      sorter: (a, b, order) =>
-        setSearchQuery(searchQueryFormat({ ...searchQuery, page, limit, sortBy: "isDone", sortOrder: order + "ing" })),
+      sorter: (_a, _b, order) =>
+        setSearchQuery(
+          searchQueryFormat({ ...searchQuery, page, limit, sortBy: "isDone", sortOrder: order + "ing" })
+        ) as any,
+    },
+    {
+      title: "Priority",
+      render: (_text, record, index) => (
+        <div
+          key={index}
+          className="text-2xl text-amber-500  cursor-pointer"
+          onClick={() => update({ ...record, isImportant: !record.isImportant })}
+        >
+          {record.isImportant ? <IoMdStar className="mx-auto" /> : <IoMdStarOutline className="mx-auto" />}
+        </div>
+      ),
+      dataIndex: "isImportant",
+      key: "isImportant",
+      align: "center",
+      sorter: (_a, _b, order) =>
+        setSearchQuery(
+          searchQueryFormat({ ...searchQuery, page, limit, sortBy: "isImportant", sortOrder: order + "ing" })
+        ) as any,
     },
     {
       title: "Actions",
-      render: (text, record, index) => (
+      render: (_text, record, index) => (
         <div key={index} className="flex gap-3 items-center justify-center">
           <Button onClick={() => handleEdit(record)} shape="circle" type="primary" icon={<FaPenAlt />} />
           <Button
@@ -123,7 +149,7 @@ const TodoList: React.FC<TodoListProps> = ({ setIsModalOpen, setEditData, data }
   ];
 
   if (isError) {
-    Swal.fire("", error.response?.data?.message || "Delete failed", "error");
+    Swal.fire("", (error as any)?.response?.data?.message || "Delete failed", "error");
   }
 
   return (
@@ -132,9 +158,9 @@ const TodoList: React.FC<TodoListProps> = ({ setIsModalOpen, setEditData, data }
         {Array.isArray(data?.data) && (
           <StyledTable
             className="bg-secondary border-0"
-            rowClassName={(record) => `border-0 ${record.isDone && "line-through"}`}
+            rowClassName={(record: ITodo) => `border-0 ${record.isDone && "line-through"}`}
             bordered={false}
-            columns={columns}
+            columns={columns as any}
             dataSource={data?.data}
             responsive={true}
             showSorterTooltip={{
@@ -158,4 +184,3 @@ const TodoList: React.FC<TodoListProps> = ({ setIsModalOpen, setEditData, data }
 };
 
 export default TodoList;
-

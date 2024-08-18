@@ -21,7 +21,7 @@ export const getSingleUTodoFn = async (id: string): Promise<ITodo> => {
   return data?.data || {};
 };
 
-export const updateTodoFn = ({ _id, ...body }: ITodo): Promise<AxiosResponse<ITodo>> => {
+export const updateTodoFn = ({ _id, ...body }: Partial<ITodo>): Promise<AxiosResponse<ITodo>> => {
   return axios.put(endpoint + _id, body);
 };
 
