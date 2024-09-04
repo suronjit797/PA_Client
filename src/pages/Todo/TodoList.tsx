@@ -80,11 +80,12 @@ const TodoList: React.FC<TodoListProps> = ({ setIsModalOpen, setEditData, data }
       title: "Title",
       dataIndex: "title",
       key: "title",
-      // sorter: () => 1,
-      sorter: (_a, _b, order) =>
-        setSearchQuery(
+      sorter: (_a, _b, order, c) => {
+        console.log({ _a, _b, order, c });
+        return setSearchQuery(
           searchQueryFormat({ ...searchQuery, page, limit, sortBy: "title", sortOrder: order + "ing" })
-        ) as any,
+        ) as any;
+      },
     },
 
     {

@@ -2,16 +2,16 @@ import { useState } from "react";
 import TodoFilter from "./TodoFilter";
 import TodoForm from "./TodoForm";
 import TodoList from "./TodoList";
-import { useSelector } from "react-redux";
 import { Button, Spin, Drawer, Form } from "antd";
 import { FaFilter, FaPlus } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 import { getAllTodoFn } from "../../transtackQuery/todoApis";
 import { searchQueryFormat, todoQueries, useSearchQuery } from "../../utils/useSearchQuery";
 import { ReloadOutlined } from "@ant-design/icons";
+import { useAppSelector } from "../../redux/store";
 
 function Todo() {
-  const { user } = useSelector((state) => state.auth);
+  const { user } = useAppSelector((state) => state.auth);
   const [searchQuery, setSearchQuery] = useSearchQuery(todoQueries);
   const [form] = Form.useForm();
 
@@ -23,7 +23,7 @@ function Todo() {
   const { data, isPending } = useQuery({
     queryKey: ["todo", searchQuery],
     queryFn: () => getAllTodoFn({ ...searchQuery, user: user._id }),
-    
+    placeholderData: (previousData) => previousData,
   });
 
   const handleClear = () => {
@@ -46,14 +46,14 @@ function Todo() {
                 }}
                 icon={<FaPlus />}
               />
-              <Button type="" icon={<FaFilter />} onClick={() => setIsDrawerOpen(!isDrawerOpen)} />
+              <Button icon={<FaFilter />} onClick={() => setIsDrawerOpen(!isDrawerOpen)} />
               {Object?.keys(searchQueryFormat(searchQuery)).length > 0 && (
                 <Button type="primary" danger icon={<ReloadOutlined />} onClick={handleClear} />
               )}
             </div>
           </div>
 
-          <TodoList {...{ isModalOpen, setIsModalOpen, editData, setEditData, data }} />
+          <TodoList {...{ setIsModalOpen, setEditData, data }} />
           {isModalOpen && <TodoForm {...{ isModalOpen, setIsModalOpen, editData, setEditData }} />}
           <Drawer
             title={<div className="text-end">Filter</div>}

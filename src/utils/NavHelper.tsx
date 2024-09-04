@@ -17,12 +17,12 @@ export const generalRouts = [
   { name: "Daily Routine", path: "/routine", icon: <MdAltRoute /> },
   { name: "Transaction", path: "/transaction", icon: <GiPayMoney /> },
   { name: "Todo", path: "/todo", icon: <LuListTodo /> },
-  { name: "Goals & Milestones", path: "/goals", icon: <GiStairsGoal /> },
-  { name: "Blog", path: "/blog", icon: <ImBlog /> },
-  { name: "Diary", path: "/diary", icon: <PiNotebookLight /> },
-  { name: "Contact", path: "/contact", icon: <MdOutlineConnectWithoutContact /> },
-  { name: "Password Manager", path: "/passwords", icon: <RiLockPasswordLine /> },
-  { name: "Events", path: "/event", icon: <SlEvent /> },
+  // { name: "Goals & Milestones", path: "/goals", icon: <GiStairsGoal /> },
+  // { name: "Blog", path: "/blog", icon: <ImBlog /> },
+  // { name: "Diary", path: "/diary", icon: <PiNotebookLight /> },
+  // { name: "Contact", path: "/contact", icon: <MdOutlineConnectWithoutContact /> },
+  // { name: "Password Manager", path: "/passwords", icon: <RiLockPasswordLine /> },
+  // { name: "Events", path: "/event", icon: <SlEvent /> },
 ];
 export const adminRouts = [
   { name: "User", path: "/user", icon: <FaUserAstronaut /> },
