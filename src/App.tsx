@@ -1,25 +1,10 @@
 import { RouterProvider } from "react-router-dom";
 import "./App.css";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { ConfigProvider, theme } from "antd";
 import { routes } from "./routes/Routes";
 import Swal from "sweetalert2";
-import { setAuth } from "./redux/features/authSlice";
-import { useAppDispatch, useAppSelector } from "./redux/store";
 import { Bounce, ToastContainer } from "react-toastify";
-
-import { gql } from "../src/__generated__/gql";
-import { client } from "./graphql";
-
-const GET_ROCKET_INVENTORY = gql(/* GraphQL */ `
-  query Users($limit: Int!) {
-    users(limit: $limit) {
-      _id
-      name
-      email
-    }
-  }
-`);
 
 // antd theming
 const customDarkTheme = {
@@ -41,27 +26,6 @@ const customDarkTheme = {
 };
 
 function App() {
-  const dispatch = useAppDispatch();
-
-  // client.setLink()
-
-  // use without lazy
-  // const queryClient = new QueryClient({
-  //   queryCache: new QueryCache({
-  //     onError: (error) => {
-  //       if (error?.response?.status === 401) {
-  //         dispatch(setAuth({ token: null, user: {} }));
-  //         localStorage.clear();
-  //       }
-  //     },
-  //   }),
-  //   defaultOptions: {
-  //     queries: {
-  //       refetchOnWindowFocus: false,
-  //     },
-  //   },
-  // });
-
   // net error
   useEffect(() => {
     if (!navigator.onLine) {
@@ -84,7 +48,7 @@ function App() {
         <div className="">
           <ToastContainer
             position="top-right"
-            autoClose={5000}
+            autoClose={2000}
             hideProgressBar={false}
             newestOnTop={false}
             closeOnClick

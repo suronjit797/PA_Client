@@ -1,33 +1,34 @@
 /* eslint-disable react/no-unescaped-entities */
-import { Button, Form, Input, notification } from "antd";
+import { Button, Form, Input } from "antd";
 import { setAuth } from "../../redux/features/authSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
-import { gql, useLazyQuery, useMutation } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import { toast } from "react-toastify";
+import { gql } from "../../__generated__";
 
-const USER_LOGIN = gql`
-  mutation Mutation($body: LoginInput) {
+const USER_LOGIN = gql(`
+  mutation Login($body: LoginInput) {
     login(body: $body) {
       accessToken
-      # refreshToken
     }
   }
-`;
+`);
 
-const GET_PROFILE_QUERY = gql`
-  query Mutation($id: ID!) {
-    user(id: $id) {
+const GET_PROFILE_QUERY = gql(`
+  query getProfile {
+    profile {
       name
       email
+      role
     }
   }
-`;
+`);
 
 const Login = () => {
   const navigate = useNavigate();
-  const [mutate, { data, loading }] = useMutation(USER_LOGIN);
+  const [login] = useMutation(USER_LOGIN);
 
   // redux
   const dispatch = useAppDispatch();
@@ -44,13 +45,12 @@ const Login = () => {
   }, [isLogin]);
 
   const handleLogin = async (values: { email: string; password: string }) => {
-    const { data } = await mutate({ variables: { body: values } });
+    const { data } = await login({ variables: { body: values } });
     console.log({ data });
 
     if (data?.login?.accessToken) {
       const token = `Bearer ${data.login.accessToken}`;
       const { data: profileData } = await getProfile({
-        variables: { id: "6777bdac463e6ce61f2dc4c0" },
         context: {
           headers: {
             Authorization: token,

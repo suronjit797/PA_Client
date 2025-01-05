@@ -1,37 +1,46 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect, ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
-import PropTypes from "prop-types";
-import { useQuery } from "@tanstack/react-query";
-import { getProfileUserFn } from "../../transtackQuery/userApis";
 import { setUser } from "../../redux/features/authSlice";
+import { useAppDispatch, useAppSelector } from "../../redux/store";
+import { gql } from "../../__generated__";
+import { useQuery } from "@apollo/client";
 
-const Auth = ({ children, roles = [] }) => {
-  const { isLogin, user } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
+interface AuthProps {
+  children: ReactNode;
+  roles?: string[];
+}
 
-  const { data } = useQuery({
-    queryKey: ["profile"],
-    queryFn: getProfileUserFn,
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
-    refetchOnReconnect: true,
-  });
+const GET_PROFILE_QUERY = gql(`
+  query getProfile {
+    profile {
+      name
+      email
+      role
+    }
+  }
+`);
+const Auth: React.FC<AuthProps> = ({ children, roles = [] }) => {
+  // redux
+  const dispatch = useAppDispatch();
+  const { isLogin, user } = useAppSelector((state) => state.auth);
+
+  // gql
+  const { loading, data } = useQuery(GET_PROFILE_QUERY);
 
   useEffect(() => {
-    if (data && Object.keys(data)) {
-      dispatch(setUser(data));
+    if (data?.profile && Object.keys(data?.profile)) {
+      dispatch(setUser(data.profile));
     }
   }, [data]);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isLogin) {
+    if (!loading && !isLogin) {
       navigate("/login");
     }
-  }, [isLogin]);
+  }, [isLogin, loading]);
 
   useEffect(() => {
     if (isLogin && Array.isArray(roles) && roles.length) {
@@ -43,10 +52,6 @@ const Auth = ({ children, roles = [] }) => {
   }, [roles, isLogin]);
 
   return <>{children}</>;
-};
-Auth.propTypes = {
-  children: PropTypes.node,
-  roles: PropTypes.array,
 };
 
 export default Auth;

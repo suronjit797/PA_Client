@@ -1,19 +1,70 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button, Spin, Table } from "antd";
-import { useSelector } from "react-redux";
+import { Button, Spin, Table, TableColumnsType } from "antd";
 import { Link } from "react-router-dom";
-import Swal from "sweetalert2";
 import userRole, { authAccess } from "../../utils/userRole";
 import { useEffect, useState } from "react";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { deleteUserFn, getAllUserFn } from "../../transtackQuery/userApis";
 import EditModal from "./EditModal";
+import { useAppSelector } from "../../redux/store";
+import { gql } from "../../__generated__";
+import { useMutation, useQuery } from "@apollo/client";
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
+import { IUser } from "./UsersInterface";
 
+// GraphQL Queries and Mutations
+const ALL_USERS = gql(`
+  query UsersList($pagination: PaginationInput, $query: UserQuery) {
+    users(pagination: $pagination, query: $query) {
+      meta {
+        page
+        limit
+        total
+      }
+      data {
+        _id
+        name
+        email
+        role
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`);
 
-const initialColumns = [
+const REMOVE_USER = gql(`
+  mutation DeleteUser($deleteUserId: ID!) {
+    deleteUser(id: $deleteUserId) {
+      _id
+    }
+  }
+`);
+
+// interface PaginationMeta {
+//   page: number;
+//   limit: number;
+//   total: number;
+// }
+
+// interface UsersQueryData {
+//   users: {
+//     meta: PaginationMeta;
+//     data: IUser[];
+//   };
+// }
+
+// interface DeleteUserMutationData {
+//   deleteUser: { _id: string };
+// }
+
+// interface UpdateUserMutationData {
+//   updateUser: { name: string };
+// }
+
+const initialColumns: TableColumnsType<IUser> = [
   {
     title: "No.",
-    render: (text, record, index) => index + 1,
+    render: (_, __, index) => index + 1,
     align: "center",
     width: "100px",
   },
@@ -29,70 +80,40 @@ const initialColumns = [
   },
   {
     title: "Role",
-    dataIndex: "role",
+    render: (_, user) => <span className="capitalize"> {user.role} </span>,
+    align: "center",
     key: "role",
   },
 ];
 
-const UserList = () => {
+const UserList: React.FC = () => {
+  // Redux
+  const { isLogin, user } = useAppSelector((state) => state.auth);
 
-  const [columns, setColumns] = useState(initialColumns);
+  // States
+  const [columns, setColumns] = useState<TableColumnsType<IUser>>(initialColumns);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editData, setEditData] = useState();
+  const [editData, setEditData] = useState<IUser | undefined>(undefined);
+  const [page, setPage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(3);
 
-  const { isLogin, user } = useSelector((state) => state.auth);
-  const queryClient = useQueryClient();
-
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(3);
-
+  // GraphQL Hooks
   const {
-    data: users,
-    isError,
-    error,
-    isFetching,
-  } = useQuery({
-    queryKey: ["user", page, limit],
-    queryFn: () => getAllUserFn({ page, limit }),
-  });
+    loading,
+    data: allUsers,
+    refetch,
+  } = useQuery(ALL_USERS, { variables: { pagination: { page, limit }, query: {} } });
+  const [deleteUser] = useMutation(REMOVE_USER, { refetchQueries: ["UsersList"] });
 
-  const data = users?.data || [];
-  const meta = users?.meta || {};
+  const { data, meta } = allUsers?.users || {};
 
-  const {
-    mutate: deleteUser,
-  } = useMutation({
-    mutationKey: "deleteUser",
-    mutationFn: deleteUserFn,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user"] });
-    },
-  });
-
-  // const {
-  //   mutate: updateUser,
-  // } = useMutation({
-  //   mutationKey: "updateUser",
-  //   mutationFn: updateUserFn,
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries({ queryKey: ["user"] });
-  //   },
-  // });
-
-  if (isError) {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: error.response.data?.message || "Error happened",
-    });
-  }
-
-  const editHandler = (record) => {
+  // Handlers
+  const editHandler = (record: IUser) => {
     setEditData(record);
     setIsModalOpen(true);
   };
 
-  const deleteHandler = (record) => {
+  const deleteHandler = (deleteUserId: string) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -101,27 +122,27 @@ const UserList = () => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        deleteUser(record._id);
+        try {
+          await deleteUser({ variables: { deleteUserId } });
+          toast.success("User deleted successfully!");
+        } catch (error) {
+          toast.error("Failed to delete user!");
+        }
       }
     });
   };
 
-  // const saveHandler = (values) => {
-  //   const updatedData = { ...editData, ...values };
-  //   updateUser(updatedData);
-  // };
-
-  const actionColumn = [
+  const actionColumn: TableColumnsType<IUser> = [
     {
       title: "Action",
-      render: (text, record) => (
+      render: (_: string, record: IUser) => (
         <>
           <Button type="primary" onClick={() => editHandler(record)}>
             <EditOutlined />
           </Button>
-          <Button className="ml-2" type="primary" danger onClick={() => deleteHandler(record)}>
+          <Button className="ml-2" type="primary" danger onClick={() => deleteHandler(record._id)}>
             <DeleteOutlined />
           </Button>
         </>
@@ -135,27 +156,30 @@ const UserList = () => {
     if (isLogin && authAccess(userRole.admin).includes(user?.role)) {
       setColumns([...initialColumns, ...actionColumn]);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user.role]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.role]);
 
-  const handleTableChange = (current, size) => {
+  const handleTableChange = (current: number, size?: number) => {
     setPage(current);
-    setLimit(size);
+    if (size) setLimit(size);
   };
 
   return (
     <div className="container mx-auto">
       <div className="flex items-center mb-2">
-        <h1 className="items-center">User List</h1>
+        <h1 className="items-center select-none cursor-pointer" onDoubleClick={() => refetch()}>
+          User List
+        </h1>
         <Link to="create" className="ms-auto mr-3 p-2 md:p-3 rounded bg-primary text-accent hover:text-accent-hover">
           <button className="font-semibold">Create User</button>
         </Link>
       </div>
-      <Spin spinning={isFetching}>
+      <Spin spinning={loading}>
         <div>
-          <Table
-            dataSource={data}
+          <Table<IUser>
+            dataSource={data || []}
             columns={columns}
+            rowKey={(record) => record._id}
             pagination={{
               current: page,
               pageSize: limit,
@@ -165,13 +189,8 @@ const UserList = () => {
           />
         </div>
       </Spin>
-      {isModalOpen && (
-        <EditModal
-          isModalOpen={isModalOpen}
-          editData={editData}
-          setIsModalOpen={setIsModalOpen}
-          // onSave={saveHandler}
-        />
+      {isModalOpen && editData && (
+        <EditModal isModalOpen={isModalOpen} editData={editData} setIsModalOpen={setIsModalOpen} />
       )}
     </div>
   );

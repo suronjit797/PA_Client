@@ -6,16 +6,16 @@ import Footer from "../components/Footer/Footer";
 import { useGetRoutes } from "../utils/NavHelper";
 import { useEffect, useState } from "react";
 import { FaBars, FaMoon } from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux";
 import { setTheme } from "../redux/features/themeSlice";
 import { FaSun } from "react-icons/fa6";
+import { useAppDispatch, useAppSelector } from "../redux/store";
 
 const MainLayout = () => {
   const location = useLocation();
   const [routes] = useGetRoutes();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const { isDark } = useSelector(state=> state.theme)
+  const { isDark } = useAppSelector(state=> state.theme)
 
   // state
   const [currentPage, setCurrentPage] = useState({});

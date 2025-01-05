@@ -13,12 +13,7 @@ const authLink = setContext((_, { headers }) => {
   const state = store.getState();
   const token = state.auth?.token;
 
-  return {
-    headers: {
-      ...headers,
-      authorization: token ? `Bearer ${token}` : "",
-    },
-  };
+  return { headers: token ? { ...headers, authorization: token } : { ...headers } };
 });
 
 // Error link to handle global errors
