@@ -4,15 +4,21 @@ import App from "./App.jsx";
 import "./index.css";
 import { Provider } from "react-redux";
 import { store } from "./redux/store.js";
-import axios from "axios";
+import { ApolloProvider } from "@apollo/client";
+import { client } from "./graphql.js";
 
-// axios base url
-axios.defaults.baseURL = "http://localhost:5000/api/v1";
+// check root element is exist
+const rootElement = document.getElementById("root");
+if (!rootElement) {
+  throw new Error("Root element not found");
+}
 
-ReactDOM.createRoot(document.getElementById("root")).render(
+ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <ApolloProvider client={client}>
+        <App />
+      </ApolloProvider>
     </Provider>
   </React.StrictMode>
 );

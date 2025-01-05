@@ -1,50 +1,39 @@
 /* eslint-disable react/no-unescaped-entities */
-import { Button, Form, Input } from "antd";
-import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
+import { Button, Form, Input, notification } from "antd";
 import { setAuth } from "../../redux/features/authSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import Swal from "sweetalert2";
+import { useAppDispatch, useAppSelector } from "../../redux/store";
+import { gql, useLazyQuery, useMutation } from "@apollo/client";
+import { toast } from "react-toastify";
 
-const loginFunction = async (newTodo) => {
-  const { data } = await axios.post("/users/login", newTodo);
-  return data;
-};
+const USER_LOGIN = gql`
+  mutation Mutation($body: LoginInput) {
+    login(body: $body) {
+      accessToken
+      # refreshToken
+    }
+  }
+`;
+
+const GET_PROFILE_QUERY = gql`
+  query Mutation($id: ID!) {
+    user(id: $id) {
+      name
+      email
+    }
+  }
+`;
 
 const Login = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { isLogin } = useSelector((state) => state.auth);
-  const { mutate, isError, error } = useMutation({
-    mutationKey: ["login"],
-    mutationFn: loginFunction,
-    onSuccess: async (data) => {
-      if (data?.token) {
-        const token = `Bearer ${data.token}`;
-        try {
-          const { data: userData } = await axios.get("/users/profile", {
-            headers: { Authorization: token },
-          });
-          if (userData.success) {
-            dispatch(setAuth({ token, user: userData?.data }));
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      }
+  const [mutate, { data, loading }] = useMutation(USER_LOGIN);
 
-      Swal.fire({
-        title: "Success!",
-        text: "You have successfully logged in.",
-        icon: "success",
-        confirmButtonText: "OK",
-      });
+  // redux
+  const dispatch = useAppDispatch();
+  const { isLogin } = useAppSelector((state) => state.auth);
 
-      navigate("/");
-    },
-  });
+  const [getProfile] = useLazyQuery(GET_PROFILE_QUERY);
 
   // navigate to home if login
   useEffect(() => {
@@ -54,17 +43,36 @@ const Login = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLogin]);
 
-  const handleLogin = (values) => {
-    mutate(values);
-  };
+  const handleLogin = async (values: { email: string; password: string }) => {
+    const { data } = await mutate({ variables: { body: values } });
+    console.log({ data });
 
-  if (isError) {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: error.response.data?.message || "Error happened",
-    });
-  }
+    if (data?.login?.accessToken) {
+      const token = `Bearer ${data.login.accessToken}`;
+      const { data: profileData } = await getProfile({
+        variables: { id: "6777bdac463e6ce61f2dc4c0" },
+        context: {
+          headers: {
+            Authorization: token,
+          },
+        },
+      });
+
+      console.log({ profileData });
+
+      if (profileData?.profile) {
+        dispatch(
+          setAuth({
+            token,
+            user: profileData.profile,
+          })
+        );
+
+        toast.success("Login successful!");
+        navigate("/");
+      }
+    }
+  };
 
   return (
     <div className=" bg-[url('/photo/photo2.webp')] h-screen bg-cover bg-opacity-50 backdrop-blur-xl bg-center md:grid md:grid-cols-7 min-h-screen text-white p-6 overflow-y-auto items-center ">

@@ -1,15 +1,27 @@
 import { RouterProvider } from "react-router-dom";
 import "./App.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ConfigProvider, theme } from "antd";
 import { routes } from "./routes/Routes";
 import Swal from "sweetalert2";
-import { useDispatch, useSelector } from "react-redux";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { QueryCache, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { setAuth } from "./redux/features/authSlice";
-import axios from "axios";
+import { useAppDispatch, useAppSelector } from "./redux/store";
+import { Bounce, ToastContainer } from "react-toastify";
 
+import { gql } from "../src/__generated__/gql";
+import { client } from "./graphql";
+
+const GET_ROCKET_INVENTORY = gql(/* GraphQL */ `
+  query Users($limit: Int!) {
+    users(limit: $limit) {
+      _id
+      name
+      email
+    }
+  }
+`);
+
+// antd theming
 const customDarkTheme = {
   token: {
     colorBgBase: "#2c2c2c",
@@ -29,27 +41,26 @@ const customDarkTheme = {
 };
 
 function App() {
-  const dispatch = useDispatch();
-  const { token } = useSelector((state) => state.auth);
-  // set axios default auth token
-  axios.defaults.headers.common["Authorization"] = token;
+  const dispatch = useAppDispatch();
+
+  // client.setLink()
 
   // use without lazy
-  const queryClient = new QueryClient({
-    queryCache: new QueryCache({
-      onError: (error) => {
-        if (error?.response?.status === 401) {
-          dispatch(setAuth({ token: null, user: {} }));
-          localStorage.clear();
-        }
-      },
-    }),
-    defaultOptions: {
-      queries: {
-        refetchOnWindowFocus: false,
-      },
-    },
-  });
+  // const queryClient = new QueryClient({
+  //   queryCache: new QueryCache({
+  //     onError: (error) => {
+  //       if (error?.response?.status === 401) {
+  //         dispatch(setAuth({ token: null, user: {} }));
+  //         localStorage.clear();
+  //       }
+  //     },
+  //   }),
+  //   defaultOptions: {
+  //     queries: {
+  //       refetchOnWindowFocus: false,
+  //     },
+  //   },
+  // });
 
   // net error
   useEffect(() => {
@@ -68,16 +79,28 @@ function App() {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
+    <>
       <ConfigProvider theme={customDarkTheme}>
         <div className="">
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="colored"
+            transition={Bounce}
+          />
           <ConfigProvider>
             <RouterProvider router={routes}></RouterProvider>
           </ConfigProvider>
         </div>
       </ConfigProvider>
-      <ReactQueryDevtools />
-    </QueryClientProvider>
+    </>
   );
 }
 
