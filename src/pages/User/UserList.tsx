@@ -1,9 +1,8 @@
 import { Button, Spin, Table, TableColumnsType } from "antd";
-import { Link } from "react-router-dom";
 import userRole, { authAccess } from "../../utils/userRole";
 import { useEffect, useState } from "react";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import EditModal from "./EditModal";
+import UserModalForm from "./UserModalForm";
 import { useAppSelector } from "../../redux/store";
 import { gql } from "../../__generated__";
 import { useMutation, useQuery } from "@apollo/client";
@@ -25,8 +24,6 @@ const ALL_USERS = gql(`
         name
         email
         role
-        createdAt
-        updatedAt
       }
     }
   }
@@ -39,27 +36,6 @@ const REMOVE_USER = gql(`
     }
   }
 `);
-
-// interface PaginationMeta {
-//   page: number;
-//   limit: number;
-//   total: number;
-// }
-
-// interface UsersQueryData {
-//   users: {
-//     meta: PaginationMeta;
-//     data: IUser[];
-//   };
-// }
-
-// interface DeleteUserMutationData {
-//   deleteUser: { _id: string };
-// }
-
-// interface UpdateUserMutationData {
-//   updateUser: { name: string };
-// }
 
 const initialColumns: TableColumnsType<IUser> = [
   {
@@ -95,7 +71,7 @@ const UserList: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editData, setEditData] = useState<IUser | undefined>(undefined);
   const [page, setPage] = useState<number>(1);
-  const [limit, setLimit] = useState<number>(3);
+  const [limit, setLimit] = useState<number>(10);
 
   // GraphQL Hooks
   const {
@@ -160,7 +136,7 @@ const UserList: React.FC = () => {
   }, [user?.role]);
 
   const handleTableChange = (current: number, size?: number) => {
-    setPage(current);
+    if (current) setPage(current);
     if (size) setLimit(size);
   };
 
@@ -170,9 +146,9 @@ const UserList: React.FC = () => {
         <h1 className="items-center select-none cursor-pointer" onDoubleClick={() => refetch()}>
           User List
         </h1>
-        <Link to="create" className="ms-auto mr-3 p-2 md:p-3 rounded bg-primary text-accent hover:text-accent-hover">
-          <button className="font-semibold">Create User</button>
-        </Link>
+        <button className="font-semibold ms-auto" onClick={() => setIsModalOpen(true)}>
+          Create User
+        </button>
       </div>
       <Spin spinning={loading}>
         <div>
@@ -180,17 +156,25 @@ const UserList: React.FC = () => {
             dataSource={data || []}
             columns={columns}
             rowKey={(record) => record._id}
-            pagination={{
-              current: page,
-              pageSize: limit,
-              total: meta?.total,
-              onChange: handleTableChange,
-            }}
+            pagination={
+              10 >= Number(meta?.total)
+                ? false
+                : {
+                    current: page,
+                    pageSize: limit,
+                    total: meta?.total,
+                    onChange: handleTableChange,
+                    showSizeChanger: true, 
+                    pageSizeOptions:[10, 25, 50]
+                  }
+            }
           />
         </div>
       </Spin>
-      {isModalOpen && editData && (
-        <EditModal isModalOpen={isModalOpen} editData={editData} setIsModalOpen={setIsModalOpen} />
+      {isModalOpen && (
+        <UserModalForm
+          {...{ isModalOpen, editData, setEditData, setIsModalOpen, mode: Boolean(editData) ? "edit" : "create" }}
+        />
       )}
     </div>
   );

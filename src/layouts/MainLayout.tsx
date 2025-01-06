@@ -1,6 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { Outlet, useLocation } from "react-router-dom";
-import "./MainLayout.css";
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
 import { useGetRoutes } from "../utils/NavHelper";
@@ -9,16 +7,17 @@ import { FaBars, FaMoon } from "react-icons/fa";
 import { setTheme } from "../redux/features/themeSlice";
 import { FaSun } from "react-icons/fa6";
 import { useAppDispatch, useAppSelector } from "../redux/store";
+import { IRoute } from "../interfaces/interfaces";
 
 const MainLayout = () => {
   const location = useLocation();
   const [routes] = useGetRoutes();
   const dispatch = useAppDispatch();
 
-  const { isDark } = useAppSelector(state=> state.theme)
+  const { isDark } = useAppSelector((state) => state.theme);
 
   // state
-  const [currentPage, setCurrentPage] = useState({});
+  const [currentPage, setCurrentPage] = useState<IRoute | undefined>();
   const [isNavOpen, setIsNavOpen] = useState(true);
 
   // effects
@@ -38,7 +37,7 @@ const MainLayout = () => {
       >
         <Header />
       </header>
-      <div className="w-full h-screen overflow-hidden">
+      <div className="w-full h-screen overflow-hidden flex flex-col">
         {/* body header */}
         <div className="py-3 font-bold flex justify-between items-center px-3 custom_shadow h-12">
           <div
@@ -53,14 +52,12 @@ const MainLayout = () => {
             onClick={() => dispatch(setTheme())}
           >
             {/* <MoreOutlined /> */}
-            {
-              isDark ? <FaMoon /> : <FaSun />
-            }
+            {isDark ? <FaMoon /> : <FaSun />}
           </div>
         </div>
 
         {/* main body */}
-        <main className="body px-4 h-screen overflow-y-auto relative scroll py-4 ">
+        <main className="px-4 overflow-y-auto scroll py-4 ">
           <Outlet />
         </main>
 

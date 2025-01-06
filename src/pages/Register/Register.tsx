@@ -1,57 +1,35 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation } from "@apollo/client";
 import { Button, Form, Input } from "antd";
-import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
+import { gql } from "../../__generated__";
+import { ICreateUser } from "../User/UsersInterface";
+import { toast } from "react-toastify";
 
-const createUser = (body) => {
-  // console.log(body);
-  return axios.post("/users/register", body);
-};
+const REGISTER_USER = gql(`
+  mutation RegisterUser($body: CreateUserInput!) {
+    register(body: $body) {
+      _id
+      name
+    }
+  }
+`);
 const Register = () => {
   const navigate = useNavigate();
 
-  const { mutate, isError, error } = useMutation({
-    mutationKey: "creatUser",
-    mutationFn: createUser,
-    onSuccess: async (data) => {
-      await Swal.fire({
-        title: "Success!",
-        text: data.response?.message || "You have successfully registered.",
-        icon: "success",
-        confirmButtonText: "OK",
-      });
+  const [register] = useMutation(REGISTER_USER);
 
-      navigate("/login");
-    },
-  });
-
-  const postFormData = (value) => {
-    // console.log(value)
-    const { name, email, password } = value;
-    const body = {
-      name,
-      email,
-      role: "student",
-      password,
-    };
-    mutate(body);
-    // console.log(body);
-    // navigate("/login");
+  const postFormData = async (value: ICreateUser) => {
+    const body = { ...value, role: "user" };
+    delete body?.confirm
+    console.log(body)
+    await register({ variables: { body } });
+    toast.success(`Registration successfully!`);
+    navigate("/login");
   };
 
-  if (isError) {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: error.response.data?.message || "Error happened",
-    });
-  }
-
   return (
-    <div className=" bg-[url('/photo/photo1.webp')] h-screen bg-cover bg-opacity-50 backdrop-blur-xl bg-center md:grid md:grid-cols-7 min-h-screen text-white p-6 overflow-y-auto items-center ">
-      <div className=" md:col-span-4"></div>
-      <div className=" md:col-span-3 flex flex-col justify-center gap-4 p-14 md:h-full bg-black bg-opacity-35 rounded-xl ">
+    <div className=" bg-[url('/photo/photo1.webp')] bg-cover bg-opacity-50 backdrop-blur-xl bg-center  min-h-screen text-white p-6 overflow-y-auto items-center flex">
+      <div className="p-5 p-md-14 ms-auto w-full bg-black bg-opacity-35 rounded-xl max-w-lg">
         <div className="text-4xl text-[#BDE4A7] font-semibold text-center mb-4">Registration</div>
         <Form
           className=" text-white"
@@ -73,34 +51,6 @@ const Register = () => {
           >
             <Input placeholder="Input name" />
           </Form.Item>
-
-          {/* <Form.Item
-            label="role"
-            name="role"
-            rules={[
-              {
-                required: true,
-                message: "Please input your role!",
-              },
-            ]}
-          >
-            <Select
-              style={{
-                width: "100%",
-              }}
-              options={[
-                {
-                  value: "admin",
-                  label: "Admin",
-                },
-                {
-                  value: "student",
-                  label: "Student",
-                },
-                
-              ]}
-            />
-          </Form.Item> */}
 
           <Form.Item
             name="email"
@@ -165,7 +115,7 @@ const Register = () => {
           </Form.Item>
         </Form>
         <div className="text-xl text-center font-semibold">
-          Already Registered?
+          Already Registered? {" "}
           <Link to="/login" className=" text-xl text-[#BDE4A7] font-semibold">
             Sing In
           </Link>

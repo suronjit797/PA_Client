@@ -7,8 +7,6 @@ import Home from "../pages/Home/Home";
 import Auth from "../components/Auth/Auth";
 import Admin from "../pages/Admin/Admin";
 import UserList from "../pages/User/UserList";
-import UserCreate from "../pages/User/UserCreate";
-import UserUpdate from "../pages/User/UserUpdate";
 import Transactions from "../pages/Transaction/Transactions";
 import TransactionSummary from "../pages/TransactionSummary/TransactionSummary";
 import Todo from "../pages/Todo/Todo";
@@ -44,25 +42,8 @@ export const routes = createBrowserRouter([
             <UserList />
           </Auth>
         ),
-      },
-      {
-        path: "/user/create",
-        element: (
-          //! is user match his role
-          <Auth roles={["admin"]}>
-            <UserCreate />
-          </Auth>
-        ),
-      },
-      {
-        path: "/user/edit/:id",
-        element: (
-          //! is user match his role
-          <Auth roles={["admin"]}>
-            <UserUpdate />
-          </Auth>
-        ),
-      },
+      },     
+      
       //     {
       //       path: "/admin",
       //       element: (
