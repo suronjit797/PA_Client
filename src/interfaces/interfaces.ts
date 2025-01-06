@@ -3,3 +3,9 @@ export interface IMeta {
   limit: number;
   page: number;
 }
+
+export interface IRoute {
+  name: string;
+  path: string;
+  icon: JSX.Element;
+}

@@ -6,3 +6,11 @@ export interface IUser {
   createdAt?: string;
   updatedAt?: string;
 }
+
+export interface ICreateUser {
+  name: string;
+  email: string;
+  role: string;
+  password: string;
+  confirm?: string;
+}

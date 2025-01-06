@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { FaUserAstronaut } from "react-icons/fa";
-import { useSelector } from "react-redux";
 import userRole, { authAccess } from "./userRole";
 import { ImBlog } from "react-icons/im";
 import { SlCalender, SlEvent } from "react-icons/sl";
@@ -10,8 +9,11 @@ import { GoHome } from "react-icons/go";
 import { PiNotebookLight } from "react-icons/pi";
 import { MdAltRoute, MdOutlineConnectWithoutContact } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
+import { useAppSelector } from "../redux/store";
+import { IRoute } from "../interfaces/interfaces";
 
-export const generalRouts = [
+
+export const generalRouts: IRoute[] = [
   { name: "Home", path: "/", icon: <GoHome /> },
   { name: "Calendar", path: "/calender", icon: <SlCalender /> },
   { name: "Daily Routine", path: "/routine", icon: <MdAltRoute /> },
@@ -24,15 +26,13 @@ export const generalRouts = [
   // { name: "Password Manager", path: "/passwords", icon: <RiLockPasswordLine /> },
   // { name: "Events", path: "/event", icon: <SlEvent /> },
 ];
-export const adminRouts = [
-  { name: "User", path: "/user", icon: <FaUserAstronaut /> },
-];
+export const adminRouts: IRoute[] = [{ name: "User", path: "/user", icon: <FaUserAstronaut /> }];
 
 // routes
 export const useGetRoutes = () => {
-  const { user } = useSelector((state) => state.auth);
+  const { user } = useAppSelector((state) => state.auth);
 
-  const [routes, setRouts] = useState(generalRouts);
+  const [routes, setRouts] = useState<IRoute[]>(generalRouts);
 
   useEffect(() => {
     if (authAccess(userRole.admin).includes(user?.role)) {

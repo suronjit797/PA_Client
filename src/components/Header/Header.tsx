@@ -1,15 +1,15 @@
-import { useDispatch, useSelector } from "react-redux";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { setAuth } from "../../redux/features/authSlice";
 import { IoMdLogOut } from "react-icons/io";
 import { useGetRoutes } from "../../utils/NavHelper";
 import { FaRegCircleUser } from "react-icons/fa6";
+import { useAppDispatch, useAppSelector } from "../../redux/store";
 
 const Header = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [routes] = useGetRoutes();
-  const { user } = useSelector((state) => state.auth);
+  const { user } = useAppSelector((state) => state.auth);
 
   // handle logout
   const handleLogout = () => {
@@ -18,7 +18,7 @@ const Header = () => {
     navigate("/login");
   };
   return (
-    <div>
+    <div className="flex flex-col h-screen">
       {/* Logo */}
       <div className="py-3 text-center bg-secondary px-3 custom_shadow h-12 flex items-center justify-center">
         <Link className="font-bold " to="/">
@@ -27,8 +27,8 @@ const Header = () => {
         <div className="bars"></div>
       </div>
       {/* nav */}
-      <div className="main_nav px-1 py-2 ">
-        {routes.map((item, index) => {
+      <div className="px-1 py-2 overflow-y-auto scroll ">
+        { Array.isArray(routes) && routes.map((item, index) => {
           return (
             <NavLink
               key={index}
@@ -46,12 +46,12 @@ const Header = () => {
         })}
       </div>
 
-      <div className="py-3 flex justify-between items-center bg-secondary  px-3 custom_shadow h-16">
+      <div className="py-3 mt-auto flex justify-between items-center bg-secondary  px-3 custom_shadow h-12">
         <Link className="font-bold flex items-center space-x-3" to="/profile">
           <FaRegCircleUser className="text-3xl" />
           <div>
             <h5 className="font-bold">{user?.name}</h5>
-            <div className="capitalize"> ({user?.role})</div>
+            <div className="capitalize text-xs"> ({user?.role})</div>
           </div>
         </Link>
         <div
