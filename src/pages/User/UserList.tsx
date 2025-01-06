@@ -9,6 +9,7 @@ import { useMutation, useQuery } from "@apollo/client";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import { IUser } from "./UsersInterface";
+import { AiOutlineUserAdd } from "react-icons/ai";
 
 // GraphQL Queries and Mutations
 const ALL_USERS = gql(`
@@ -146,9 +147,16 @@ const UserList: React.FC = () => {
         <h1 className="items-center select-none cursor-pointer" onDoubleClick={() => refetch()}>
           User List
         </h1>
-        <button className="font-semibold ms-auto" onClick={() => setIsModalOpen(true)}>
-          Create User
-        </button>
+        <div className="ms-auto">
+          <Button
+            size="large"
+            onClick={() => setIsModalOpen(true)}
+            type="primary"
+            shape="circle"
+            icon={<AiOutlineUserAdd />}
+            className="bg-active hover:!bg-gray-600 active:!bg-gray-500"
+          />
+        </div>
       </div>
       <Spin spinning={loading}>
         <div>
@@ -164,8 +172,8 @@ const UserList: React.FC = () => {
                     pageSize: limit,
                     total: meta?.total,
                     onChange: handleTableChange,
-                    showSizeChanger: true, 
-                    pageSizeOptions:[10, 25, 50]
+                    showSizeChanger: true,
+                    pageSizeOptions: [10, 25, 50],
                   }
             }
           />

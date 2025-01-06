@@ -24,9 +24,10 @@ const MainLayout = () => {
   useEffect(() => {
     if (location?.pathname && Array.isArray(routes)) {
       const findRoute = routes.find((route) => route.path === location.pathname);
+      console.log(findRoute, routes)
       setCurrentPage(findRoute);
     }
-  }, [location?.pathname]);
+  }, [location?.pathname, routes]);
 
   return (
     <div className="flex">

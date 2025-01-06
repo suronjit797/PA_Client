@@ -23,8 +23,10 @@ body {
 }
 
 /* Firefox */
+/* Firefox */
 input[type="number"] {
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 .questionFrom .imageOption .ant-row.ant-form-item-row {
